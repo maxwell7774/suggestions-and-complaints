@@ -1,51 +1,38 @@
 "use client";
-import React from "react";
+import { LogOut, Moon, Settings, Sun, User } from "lucide-react";
+import { signOut } from "next-auth/react";
+import { useTheme } from "next-themes";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuGroup,
-  DropdownMenuShortcut,
-  DropdownMenuTrigger,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuPortal,
   DropdownMenuSeparator,
+  DropdownMenuShortcut,
   DropdownMenuSub,
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
+  DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
-import { Button } from "./ui/button";
-import { Avatar, AvatarFallback } from "./ui/avatar";
-import { ModeToggle } from "./light-dark-toggle";
-import {
-  User,
-  CreditCard,
-  Settings,
-  Keyboard,
-  Cloud,
-  Github,
-  LifeBuoy,
-  LogOut,
-  Mail,
-  MessageSquare,
-  Plus,
-  PlusCircle,
-  UserPlus,
-  Users,
-  Moon,
-  Sun,
-  DoorOpen,
-} from "lucide-react";
-import { useTheme } from "next-themes";
 
-const AccountDropdown = () => {
+interface AccountDropdownProps {
+  imageUrl: string | null | undefined;
+  name: string | null | undefined;
+}
+
+const AccountDropdown = ({ imageUrl, name }: AccountDropdownProps) => {
   const { resolvedTheme, setTheme } = useTheme();
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Avatar className="select-none hover:opacity-50 hover:cursor-pointer">
-          <AvatarFallback className="bg-blue-500/30">?</AvatarFallback>
+          <AvatarFallback className="bg-blue-500/30">
+            {name ? name.substring(0, 1) : "?"}
+          </AvatarFallback>
+          {imageUrl && <AvatarImage src={imageUrl}></AvatarImage>}
         </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56">
@@ -79,7 +66,10 @@ const AccountDropdown = () => {
             </DropdownMenuSubContent>
           </DropdownMenuSub>
           <DropdownMenuSeparator />
-          <DropdownMenuItem className="text-red-500 hover:!bg-red-500/30 hover:!text-red-500">
+          <DropdownMenuItem
+            onClick={() => signOut()}
+            className="text-red-500 hover:!bg-red-500/30 hover:!text-red-500"
+          >
             <LogOut className="mr-2 h-4 w-4" />
             <span>Log out</span>
             <DropdownMenuShortcut>⌘B</DropdownMenuShortcut>

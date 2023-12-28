@@ -1,7 +1,12 @@
+import { auth } from "@/auth";
 import { Clipboard } from "lucide-react";
 import Image from "next/image";
 
-export default function HomePage() {
+export default async function HomePage() {
+  const session = await auth();
+
+  console.log(session);
+
   return (
     <div className=" h-5/6 flex justify-center">
       <div className="flex flex-col h-full w-full max-w-screen-lg items-center justify-center gap-y-3 text-center">
