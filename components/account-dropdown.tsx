@@ -16,6 +16,7 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
+import Link from "next/link";
 
 interface AccountDropdownProps {
   imageUrl: string | null | undefined;
@@ -39,10 +40,11 @@ const AccountDropdown = ({ imageUrl, name }: AccountDropdownProps) => {
         <DropdownMenuLabel>My Account</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuItem>
-            <User className="mr-2 h-4 w-4" />
-            <span>Profile</span>
-            <DropdownMenuShortcut>⌘B</DropdownMenuShortcut>
+          <DropdownMenuItem asChild>
+            <Link href={"/profile"}>
+              <User className="mr-2 h-4 w-4" />
+              <span>Profile</span>
+            </Link>
           </DropdownMenuItem>
           <DropdownMenuSub>
             <DropdownMenuSubTrigger>
