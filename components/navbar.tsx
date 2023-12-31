@@ -40,7 +40,7 @@ const Navbar = () => {
   const activeLinkClass = "text-neutral-500";
 
   return (
-    <nav className="fixed top-0 z-50 px-2 h-16 flex justify-center items-center border-b shadow-sm w-full">
+    <nav className="fixed top-0 z-50 px-2 h-16 flex justify-center items-center border-b backdrop-blur-md shadow-sm w-full">
       <div className="flex items-center justify-between max-w-screen-lg w-full space-x-5">
         <Link href={"/"}>
           <div className="flex items-center gap-x-1.5 font-semibold hover:cursor-pointer">
