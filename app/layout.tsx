@@ -28,10 +28,7 @@ export default async function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={cn(
-          "min-h-screen bg-background font-sans antialiased",
-          fontSans.variable
-        )}
+        className={cn("bg-background font-sans antialiased", fontSans.variable)}
       >
         <SessionProvider session={session}>
           <ThemeProvider
@@ -40,11 +37,11 @@ export default async function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            <div className="flex flex-col h-full">
+            <article className="min-h-full grid grid-rows-1">
               <Navbar />
               <main className="pt-16 px-2">{children}</main>
               <Footer />
-            </div>
+            </article>
           </ThemeProvider>
         </SessionProvider>
       </body>
