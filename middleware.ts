@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 
 const middleware = auth((req) => {
   if (!req.auth) {
-    const loginUrl = new URL("/auth/login", req.url);
+    const loginUrl = new URL("/login", req.url);
     loginUrl.searchParams.set("referrer", req.nextUrl.pathname);
     console.log("Redrecting to login...");
     return NextResponse.redirect(loginUrl);

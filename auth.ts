@@ -6,15 +6,9 @@ import { type Adapter } from "@auth/core/adapters";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 
 declare module "next-auth" {
-  /**
-   * Returned by `useSession`, `getSession` and received as a prop on the `SessionProvider` React Context
-   */
-
   interface User {
-    /** Define any user-specific variables here to make them available to other code inferences */
     role: string;
     id: string;
-    // Any other attributes you need from either your User table columns or additional fields during a session callback
   }
 
   interface Session {
@@ -46,7 +40,6 @@ export const {
       clientId: process.env.GITLAB_CLIENT_ID,
       clientSecret: process.env.GITLAB_CLIENT_SECRET,
       profile(profile: GitLabProfile) {
-        console.log(profile);
         return {
           id: profile.id.toString(),
           name: profile.name,
