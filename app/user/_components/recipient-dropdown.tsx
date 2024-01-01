@@ -1,15 +1,17 @@
 import GroupMultipleSelector, { Option } from "@/components/multi-select";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import React from "react";
+import {
+  Control,
+  Controller,
+  FieldValues,
+  UseFormRegister,
+} from "react-hook-form";
 
-const RecipientsDropdown = () => {
+interface RecipientsDropdownProps {
+  control: Control<FieldValues, any>;
+}
+
+const RecipientsDropdown = ({ control }: RecipientsDropdownProps) => {
   const OPTIONS: Option[] = [
     { label: "Stitch", value: "Stitch1" },
     { label: "Talden", value: "Talden2" },
@@ -25,16 +27,22 @@ const RecipientsDropdown = () => {
   ];
 
   return (
-    <GroupMultipleSelector
-      // value={field.value}
-      // onChange={field.onChange}
-      options={OPTIONS}
-      placeholder="Select your recipients here..."
-      //   emptyIndicator={
-      //     <p className="text-center text-lg leading-10 text-gray-600 dark:text-gray-400">
-      //       no results found.
-      //     </p>
-      //   }
+    <Controller
+      name="recipients"
+      control={control}
+      render={({ field: { onChange, onBlur, value, ref } }) => (
+        <GroupMultipleSelector
+          value={value}
+          onChange={onChange}
+          options={OPTIONS}
+          placeholder="Select your recipients here..."
+          //   emptyIndicator={
+          //     <p className="text-center text-lg leading-10 text-gray-600 dark:text-gray-400">
+          //       no results found.
+          //     </p>
+          //   }
+        />
+      )}
     />
   );
 };
