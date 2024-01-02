@@ -9,12 +9,11 @@ import { User } from "@prisma/client";
 
 interface MessageFormProps {
   messageType: "SUGGESTION" | "COMPLAINT";
-  suggestionRecipients: User[];
-  complaintRecipients: User[];
+  recipients: User[];
   sender: User;
 }
 
-const MessageForm = ({ messageType, sender }: MessageFormProps) => {
+const MessageForm = ({ messageType, sender, recipients }: MessageFormProps) => {
   const {
     control,
     register,
@@ -41,11 +40,11 @@ const MessageForm = ({ messageType, sender }: MessageFormProps) => {
       className="flex flex-col space-y-5 py-5"
     >
       <div className="flex flex-col space-y-1">
-        <p>Recipients</p>
-        <RecipientsDropdown control={control} />
+        <label>Recipients</label>
+        <RecipientsDropdown control={control} recipients={recipients} />
       </div>
       <div className="flex flex-col space-y-1">
-        <p>Subject</p>
+        <label>Subject</label>
         <Input
           id="subject"
           placeholder="Please write your subject here..."
@@ -53,7 +52,7 @@ const MessageForm = ({ messageType, sender }: MessageFormProps) => {
         />
       </div>
       <div className="flex flex-col space-y-1">
-        <p>Message</p>
+        <label>Message</label>
         <Textarea
           id="body"
           placeholder="Please write your message here..."

@@ -3,13 +3,19 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import React, { useState } from "react";
 import MessageForm from "./message-form";
 import { Separator } from "@/components/ui/separator";
-import { User } from "next-auth";
+import { User } from "@prisma/client";
 
 interface MessageSelectProps {
   sender: User;
+  suggestionRecipients: User[];
+  complaintRecipients: User[];
 }
 
-const MessageSelect = ({ sender }: MessageSelectProps) => {
+const MessageSelect = ({
+  sender,
+  suggestionRecipients,
+  complaintRecipients,
+}: MessageSelectProps) => {
   const [messageType, setMessageType] = useState<"SUGGESTION" | "COMPLAINT">(
     "SUGGESTION"
   );
@@ -40,10 +46,18 @@ const MessageSelect = ({ sender }: MessageSelectProps) => {
           </TabsTrigger>
         </TabsList>
         <TabsContent value="suggestion">
-          <MessageForm messageType={messageType} sender={sender} />
+          <MessageForm
+            messageType={messageType}
+            recipients={suggestionRecipients}
+            sender={sender}
+          />
         </TabsContent>
         <TabsContent value="complaint">
-          <MessageForm messageType={messageType} sender={sender} />
+          <MessageForm
+            messageType={messageType}
+            recipients={complaintRecipients}
+            sender={sender}
+          />
         </TabsContent>
       </Tabs>
     </div>

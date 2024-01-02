@@ -18,8 +18,8 @@ const MessageTypeCheckboxes = ({ user, onUserChanges }: Props) => {
             onUserChanges({ ...user, suggestionRecipient: value as boolean });
           }}
         />
-        <label className="hidden xs:inline">Suggestions</label>
-        <label className="xs:hidden">Sugg</label>
+        <label className="hidden sm:inline">Suggestions</label>
+        <label className="sm:hidden">Sugg</label>
       </div>
       <div className="flex items-center space-x-2">
         <Checkbox
@@ -28,8 +28,8 @@ const MessageTypeCheckboxes = ({ user, onUserChanges }: Props) => {
             onUserChanges({ ...user, complaintRecipient: value as boolean });
           }}
         />
-        <label className="hidden xs:inline">Complaints</label>
-        <label className="xs:hidden">Comp</label>
+        <label className="hidden sm:inline">Complaints</label>
+        <label className="sm:hidden">Comp</label>
       </div>
     </div>
   );

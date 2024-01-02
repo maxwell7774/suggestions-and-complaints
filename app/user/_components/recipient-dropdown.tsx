@@ -1,4 +1,5 @@
 import GroupMultipleSelector, { Option } from "@/components/multi-select";
+import { User } from "@prisma/client";
 import React from "react";
 import {
   Control,
@@ -9,22 +10,19 @@ import {
 
 interface RecipientsDropdownProps {
   control: Control<FieldValues, any>;
+  recipients: User[];
 }
 
-const RecipientsDropdown = ({ control }: RecipientsDropdownProps) => {
-  const OPTIONS: Option[] = [
-    { label: "Stitch", value: "Stitch1" },
-    { label: "Talden", value: "Talden2" },
-    // { label: "Remix", value: "remix" },
-    // { label: "Vite", value: "vite" },
-    // { label: "Nuxt", value: "nuxt" },
-    // { label: "Vue", value: "vue" },
-    // { label: "Svelte", value: "svelte" },
-    // { label: "Angular", value: "angular" },
-    // { label: "Ember", value: "ember", disable: true },
-    // { label: "Gatsby", value: "gatsby", disable: true },
-    // { label: "Astro", value: "astro" },
-  ];
+const RecipientsDropdown = ({
+  control,
+  recipients,
+}: RecipientsDropdownProps) => {
+  const options: Option[] = recipients.map((recipient) => ({
+    label: recipient.name ? recipient.name : "(Unknown Name)",
+    value: recipient.name
+      ? recipient.name + recipient.id
+      : "(Unknown Name)" + recipient.id,
+  }));
 
   return (
     <Controller
@@ -34,13 +32,8 @@ const RecipientsDropdown = ({ control }: RecipientsDropdownProps) => {
         <GroupMultipleSelector
           value={value}
           onChange={onChange}
-          options={OPTIONS}
+          options={options}
           placeholder="Select your recipients here..."
-          //   emptyIndicator={
-          //     <p className="text-center text-lg leading-10 text-gray-600 dark:text-gray-400">
-          //       no results found.
-          //     </p>
-          //   }
         />
       )}
     />
