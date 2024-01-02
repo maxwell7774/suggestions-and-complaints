@@ -17,8 +17,8 @@ export async function POST(request: NextRequest) {
       senderId: body.senderId,
       recipients: {
         createMany: {
-          data: body.recipients.map((recipient: any) => {
-            return { recipientId: recipient.id };
+          data: body.recipients.map((recipientId: string) => {
+            return { recipientId: recipientId };
           }),
         },
       },

@@ -1,11 +1,14 @@
 import { Separator } from "@/components/ui/separator";
-import React from "react";
+import React, { useState } from "react";
 import RecipientsDropdown from "./recipient-dropdown";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { FieldValues, useForm } from "react-hook-form";
 import { User } from "@prisma/client";
+import axios from "axios";
+import { useRouter } from "next/navigation";
+import { Loader2 } from "lucide-react";
 
 interface MessageFormProps {
   messageType: "SUGGESTION" | "COMPLAINT";
@@ -14,14 +17,20 @@ interface MessageFormProps {
 }
 
 const MessageForm = ({ messageType, sender, recipients }: MessageFormProps) => {
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const router = useRouter();
+
   const {
     control,
     register,
     formState: { errors },
     handleSubmit,
+    reset,
   } = useForm();
 
   const onSubmit = (fieldValues: FieldValues) => {
+    router.prefetch("/user/message-submitted");
+    setIsSubmitting(true);
     const newMessage = {
       subject: fieldValues.subject,
       messageBody: fieldValues.messageBody,
@@ -31,7 +40,16 @@ const MessageForm = ({ messageType, sender, recipients }: MessageFormProps) => {
         recipient.value.replace(recipient.label, "")
       ),
     };
-    console.log(newMessage);
+    axios
+      .post("/api/messages", newMessage)
+      .then(() => {
+        reset();
+        router.push("/user/message-submitted");
+      })
+      .catch((e) => {
+        setIsSubmitting(false);
+        console.log(e);
+      });
   };
 
   return (
@@ -61,7 +79,8 @@ const MessageForm = ({ messageType, sender, recipients }: MessageFormProps) => {
         />
       </div>
       <Separator />
-      <Button type="submit" variant={"secondary"}>
+      <Button type="submit" disabled={isSubmitting} variant={"secondary"}>
+        {isSubmitting && <Loader2 className="animate-spin w-4 h-4 mr-2" />}
         Submit
       </Button>
     </form>
