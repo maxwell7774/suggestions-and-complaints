@@ -7,12 +7,11 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { prismaClient } from "@/prisma-client";
+import Link from "next/link";
 import React from "react";
 
 const ReviewerPage = async () => {
   const messages = await prismaClient.message.findMany();
-
-  console.log(messages);
 
   return (
     <div className="flex justify-center h-full w-full">
@@ -29,34 +28,26 @@ const ReviewerPage = async () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            <TableRow>
-              <TableCell>1</TableCell>
-              <TableCell>Suggestion</TableCell>
-              <TableCell>This is a suggestion</TableCell>
-              <TableCell>Jan 1, 2023</TableCell>
-              <TableCell>Jan 2, 2023</TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell>1</TableCell>
-              <TableCell>Suggestion</TableCell>
-              <TableCell>This is a suggestion</TableCell>
-              <TableCell>Jan 1, 2023</TableCell>
-              <TableCell>Jan 2, 2023</TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell>1</TableCell>
-              <TableCell>Suggestion</TableCell>
-              <TableCell>This is a suggestion</TableCell>
-              <TableCell>Jan 1, 2023</TableCell>
-              <TableCell>Jan 2, 2023</TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell>1</TableCell>
-              <TableCell>Suggestion</TableCell>
-              <TableCell>This is a suggestion</TableCell>
-              <TableCell>Jan 1, 2023</TableCell>
-              <TableCell>Jan 2, 2023</TableCell>
-            </TableRow>
+            {messages.map((message) => (
+              <TableRow key={message.id}>
+                <TableCell>{message.id}</TableCell>
+                <TableCell>
+                  {message.messageType === "SUGGESTION"
+                    ? "Suggestion"
+                    : "Complaint"}
+                </TableCell>
+                <TableCell>
+                  <Link
+                    className="hover:text-neutral-500 underline transition-colors"
+                    href={`/reviewer/${message.id}`}
+                  >
+                    {message.subject}
+                  </Link>
+                </TableCell>
+                <TableCell>{message.dateCreated.toLocaleString()}</TableCell>
+                <TableCell>{message.dateUpdated.toLocaleString()}</TableCell>
+              </TableRow>
+            ))}
           </TableBody>
         </Table>
       </div>
