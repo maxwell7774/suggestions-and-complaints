@@ -56,12 +56,14 @@ const DeleteCommentButton = ({
           <ScrollArea className="max-h-96">{comment}</ScrollArea>
         </blockquote>
         <DialogFooter>
-          <DialogClose asChild>
-            <Button onClick={handleDelete}>Yes</Button>
-          </DialogClose>
-          <DialogClose asChild>
-            <Button color="gray">No</Button>
-          </DialogClose>
+          <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-2 pt-4">
+            <DialogClose asChild>
+              <Button onClick={handleDelete}>Yes</Button>
+            </DialogClose>
+            <DialogClose asChild>
+              <Button color="gray">No</Button>
+            </DialogClose>
+          </div>
         </DialogFooter>
       </DialogContent>
     </Dialog>
