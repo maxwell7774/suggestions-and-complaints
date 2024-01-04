@@ -7,8 +7,8 @@ interface Props {
 const MessageSubject = ({ subject }: Props) => {
   return (
     <div className="flex flex-col space-y-2">
-      <label>Subject</label>
-      <span>{subject}</span>
+      <h2 className="text-lg font-bold">Subject</h2>
+      <p>{subject}</p>
     </div>
   );
 };

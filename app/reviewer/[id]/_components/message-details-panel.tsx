@@ -11,31 +11,31 @@ interface Props {
 
 const MessageDetailsPanel = ({ message, sender, recipients }: Props) => {
   return (
-    <Card className="h-full min-w-min">
-      <div className="flex flex-col space-y-3">
-        <div className="flex items-center space-x-2">
-          <label>Id:</label>
-          <label className="sm:hidden  md:block">{message.id}</label>
-          <label className="hidden sm:block md:hidden">
+    <Card className="h-full min-w-min min-h-96">
+      <div className="flex flex-col">
+        <div className="flex items-center space-x-2 p-3">
+          <span className="font-semibold">Id:</span>
+          <span className="sm:hidden  md:block">{message.id}</span>
+          <span className="hidden sm:block md:hidden">
             ...
             {message.id.substring(message.id.length - 10, message.id.length)}
-          </label>
+          </span>
         </div>
         <Separator />
-        <div className="flex items-center space-x-2">
-          <label>Type:</label>
-          <label>
+        <div className="flex items-center space-x-2 p-3">
+          <span className="font-semibold">Type:</span>
+          <span>
             {message.messageType === "SUGGESTION" ? "Suggestion" : "Complaint"}
-          </label>
+          </span>
         </div>
         <Separator />
-        <div className="flex items-center">
-          <label>Sender:</label>
-          <label>{sender ? sender.name : "Anonymous"}</label>
+        <div className="flex items-center space-x-2 p-3 ">
+          <span className="font-semibold">Sender:</span>
+          <span>{sender ? sender.name : "Anonymous"}</span>
         </div>
         <Separator />
-        <div className="flex space-x-1 flex-wrap">
-          <label>Recipients:</label>
+        <div className="flex space-x-2 flex-wrap p-3">
+          <span className="font-semibold">Recipients:</span>
           {recipients &&
             recipients.map((recipient) => (
               <div key={recipient.id}>

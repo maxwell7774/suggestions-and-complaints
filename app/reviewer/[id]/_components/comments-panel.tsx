@@ -14,11 +14,10 @@ interface Props {
 const CommentsPanel = ({ messageId, comments, userId }: Props) => {
   return (
     <div className="flex flex-col space-y-5 sm:col-span-3">
-      <Separator />
       <AddCommentForm messageId={messageId} userId={userId} />
       <Separator />
-      <ScrollArea className="max-h-48">
-        <div className="flex flex-col space-y-3">
+      <ScrollArea className="max-h-64">
+        <div className="flex flex-col">
           {comments.map((comment) => (
             <CommentLine
               userId={userId}

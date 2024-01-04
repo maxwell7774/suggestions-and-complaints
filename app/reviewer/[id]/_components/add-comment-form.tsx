@@ -41,19 +41,20 @@ const AddCommentForm = ({ messageId, userId }: Props) => {
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <div className="flex flex-col space-y-3">
-        <h2 className="text-xl">Comments</h2>
+        <h2 className="text-lg font-bold">Comments</h2>
         <Textarea
           className="h-48"
-          placeholder="Reviewer Comments:"
+          placeholder="Make your comment here..."
           {...register("comment")}
         />
         <div className="flex items-center flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
-          <Button type="submit" disabled={isLoading}>
+          <Button
+            type="submit"
+            className="w-full sm:w-auto"
+            disabled={isLoading}
+          >
             {isLoading && <Loader2 className="w-4 h-4 animate-spin" />}
             Add Comment
-          </Button>
-          <Button type="reset" onClick={() => reset()}>
-            Clear
           </Button>
         </div>
       </div>
