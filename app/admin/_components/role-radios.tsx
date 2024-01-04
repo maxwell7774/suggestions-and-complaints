@@ -19,17 +19,21 @@ const RoleRadios = ({ user, onUserChanges }: Props) => {
         });
       }}
     >
-      <div className="flex items-center space-x-2">
-        <RadioGroupItem value="USER" />
-        <label>User</label>
-      </div>
-      <div className="flex items-center space-x-2">
-        <RadioGroupItem value="REVIEWER" />
-        <label>Reviewer</label>
-      </div>
-      <div className="flex items-center space-x-2">
-        <RadioGroupItem value="ADMIN" />
-        <label>Admin</label>
+      <div className="flex flex-col items-center">
+        <div className="flex flex-col">
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem value="USER" />
+            <label>User</label>
+          </div>
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem value="REVIEWER" />
+            <label>Reviewer</label>
+          </div>
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem value="ADMIN" />
+            <label>Admin</label>
+          </div>
+        </div>
       </div>
     </RadioGroup>
   );

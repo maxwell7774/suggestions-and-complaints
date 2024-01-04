@@ -16,7 +16,7 @@ const CommentLine = ({ comment, commenter, userId }: Props) => {
       className="flex justify-between items-center space-x-3"
       key={comment.id}
     >
-      <blockquote className="mt-6 border-l-2 pl-6 italic">
+      <blockquote className=" border-l-2 pl-6 italic">
         <span>
           {commenter.name + " (" + comment.lastUpdated.toLocaleString() + ")"}
         </span>

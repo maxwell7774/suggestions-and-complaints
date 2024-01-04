@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import axios from "axios";
+import { Card } from "@/components/ui/card";
 
 interface Props {
   users: User[];
@@ -21,21 +22,23 @@ interface Props {
 
 const AdminTable = ({ users }: Props) => {
   return (
-    <Table>
-      <TableHeader>
-        <TableRow>
-          <TableHead className="p-1">Name</TableHead>
-          <TableHead className="p-1">Role</TableHead>
-          <TableHead className="p-1">Message Types</TableHead>
-          <TableHead className="p-1">Save Changes</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {users.map((user) => (
-          <AdminTableRow key={user.id} user={user} />
-        ))}
-      </TableBody>
-    </Table>
+    <Card>
+      <Table className="text-center">
+        <TableHeader>
+          <TableRow>
+            <TableHead className="p-2 text-center">Name</TableHead>
+            <TableHead className="p-2 text-center">Role</TableHead>
+            <TableHead className="p-2 text-center">Message Types</TableHead>
+            <TableHead className="p-2 text-center">Save Changes</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {users.map((user) => (
+            <AdminTableRow key={user.id} user={user} />
+          ))}
+        </TableBody>
+      </Table>
+    </Card>
   );
 };
 
@@ -62,20 +65,21 @@ const AdminTableRow = ({ user }: AdminTableRowProps) => {
 
   return (
     <TableRow>
-      <TableCell className="p-1">
+      <TableCell className="p-2">
         {originalUser.name ? originalUser.name : "(Unknown Name)"}
       </TableCell>
-      <TableCell className="p-1">
+      <TableCell className="p-2">
         <RoleRadios user={updatedUser} onUserChanges={setUserChanges} />
       </TableCell>
-      <TableCell className="p-1">
+      <TableCell className="p-2">
         <MessageTypeCheckboxes
           user={updatedUser}
           onUserChanges={setUserChanges}
         />
       </TableCell>
-      <TableCell className="p-1">
+      <TableCell className="p-2">
         <Button
+          size={"sm"}
           onClick={handleSaveChanges}
           disabled={
             JSON.stringify(updatedUser) === JSON.stringify(originalUser)

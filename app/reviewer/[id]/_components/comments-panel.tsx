@@ -17,7 +17,7 @@ const CommentsPanel = ({ messageId, comments, userId }: Props) => {
       <AddCommentForm messageId={messageId} userId={userId} />
       <Separator />
       <ScrollArea className="max-h-64">
-        <div className="flex flex-col">
+        <div className="flex flex-col space-y-3">
           {comments.map((comment) => (
             <CommentLine
               userId={userId}
