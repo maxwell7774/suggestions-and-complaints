@@ -43,9 +43,7 @@ const MessageDetailsPage = async ({ params: { id } }: MessageDetailsProps) => {
 
   return (
     <div className="flex flex-col items-center justify-start w-full h-full">
-      <h1 className="text-center my-5 text-2xl font-semibold">
-        Message Details
-      </h1>
+      <h1 className="text-center my-5 text-2xl font-bold">Message Details</h1>
       <div className="max-w-screen-lg w-full grid grid-cols-1 sm:grid-cols-3 auto-rows-min gap-5 mb-5">
         <div className="flex flex-col space-y-5 sm:col-span-2">
           <MessageSubject subject={message.subject} />
