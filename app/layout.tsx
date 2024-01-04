@@ -39,7 +39,7 @@ export default async function RootLayout({
           >
             <article className="min-h-full grid grid-rows-1">
               <Navbar />
-              <main className="pt-16 px-2">{children}</main>
+              <main className="pt-16 px-3">{children}</main>
               <Footer />
             </article>
           </ThemeProvider>

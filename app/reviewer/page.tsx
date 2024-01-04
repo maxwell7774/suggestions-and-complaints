@@ -17,21 +17,31 @@ const ReviewerPage = async () => {
     <div className="flex justify-center h-full w-full">
       <div className="w-full max-w-screen-lg py-5">
         <h1 className="text-2xl font-bold text-center mb-5">Review Messages</h1>
-        <Table>
-          <TableHeader>
+        <Table className="text-center">
+          <TableHeader className="text-center">
             <TableRow>
-              <TableHead>Id</TableHead>
-              <TableHead>Type</TableHead>
-              <TableHead>Subject</TableHead>
-              <TableHead>Created</TableHead>
-              <TableHead>Updated</TableHead>
+              <TableHead className="hidden md:table-cell text-center">
+                Id
+              </TableHead>
+              <TableHead className="hidden sm:table-cell text-center">
+                Type
+              </TableHead>
+              <TableHead className="text-center">Subject</TableHead>
+              <TableHead className="hidden sm:table-cell text-center">
+                Created
+              </TableHead>
+              <TableHead className="hidden md:table-cell text-center">
+                Updated
+              </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {messages.map((message) => (
               <TableRow key={message.id}>
-                <TableCell>{message.id}</TableCell>
-                <TableCell>
+                <TableCell className="hidden md:table-cell">
+                  {message.id}
+                </TableCell>
+                <TableCell className="hidden sm:table-cell">
                   {message.messageType === "SUGGESTION"
                     ? "Suggestion"
                     : "Complaint"}
@@ -44,8 +54,12 @@ const ReviewerPage = async () => {
                     {message.subject}
                   </Link>
                 </TableCell>
-                <TableCell>{message.dateCreated.toLocaleString()}</TableCell>
-                <TableCell>{message.dateUpdated.toLocaleString()}</TableCell>
+                <TableCell className="hidden sm:table-cell">
+                  {message.dateCreated.toLocaleString()}
+                </TableCell>
+                <TableCell className="hidden md:table-cell">
+                  {message.dateUpdated.toLocaleString()}
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>
