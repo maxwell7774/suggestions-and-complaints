@@ -24,10 +24,10 @@ const AdminTable = ({ users }: Props) => {
     <Table>
       <TableHeader>
         <TableRow>
-          <TableHead>Name</TableHead>
-          <TableHead>Role</TableHead>
-          <TableHead>Message Types</TableHead>
-          <TableHead>Save Changes</TableHead>
+          <TableHead className="p-1">Name</TableHead>
+          <TableHead className="p-1">Role</TableHead>
+          <TableHead className="p-1">Message Types</TableHead>
+          <TableHead className="p-1">Save Changes</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -62,19 +62,19 @@ const AdminTableRow = ({ user }: AdminTableRowProps) => {
 
   return (
     <TableRow>
-      <TableCell>
+      <TableCell className="p-1">
         {originalUser.name ? originalUser.name : "(Unknown Name)"}
       </TableCell>
-      <TableCell>
+      <TableCell className="p-1">
         <RoleRadios user={updatedUser} onUserChanges={setUserChanges} />
       </TableCell>
-      <TableCell>
+      <TableCell className="p-1">
         <MessageTypeCheckboxes
           user={updatedUser}
           onUserChanges={setUserChanges}
         />
       </TableCell>
-      <TableCell>
+      <TableCell className="p-1">
         <Button
           onClick={handleSaveChanges}
           disabled={

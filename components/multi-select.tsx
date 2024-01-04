@@ -234,7 +234,7 @@ export default function GroupMultipleSelector({
   return (
     <Command
       onKeyDown={handleKeyDown}
-      className="overflow-visible bg-transparent"
+      className="overflow-visible bg-transparent text-base"
       shouldFilter={!onSearch} // when onSearch is provided, we don't want to filter the options.
     >
       <div
@@ -291,7 +291,7 @@ export default function GroupMultipleSelector({
                 ? ""
                 : placeholder
             }
-            className="ml-2 flex-1 bg-transparent outline-none placeholder:text-muted-foreground"
+            className="ml-1 flex-1 bg-transparent outline-none placeholder:text-muted-foreground text-base"
             maxLength={maxTextLength}
           />
         </div>
