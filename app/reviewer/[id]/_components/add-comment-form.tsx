@@ -6,6 +6,10 @@ import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { FieldValues, useForm } from "react-hook-form";
+import schema from "../_schemas/comment-form-schema";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+type FormData = Zod.infer<typeof schema>;
 
 interface Props {
   messageId: string;
@@ -18,7 +22,7 @@ const AddCommentForm = ({ messageId, userId }: Props) => {
     handleSubmit,
     formState: { errors },
     reset,
-  } = useForm();
+  } = useForm<FormData>({ resolver: zodResolver(schema) });
   const router = useRouter();
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -26,7 +30,7 @@ const AddCommentForm = ({ messageId, userId }: Props) => {
     setIsLoading(true);
     axios
       .post("/api/messages/comments", {
-        ...fieldValues,
+        comment: fieldValues.comment,
         messageId: messageId,
         commenterId: userId,
       })
@@ -47,6 +51,9 @@ const AddCommentForm = ({ messageId, userId }: Props) => {
           placeholder="Make your comment here..."
           {...register("comment")}
         />
+        {errors.comment && (
+          <p className="text-destructive">{errors.comment.message}</p>
+        )}
         <div className="flex items-center flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
           <Button
             type="submit"

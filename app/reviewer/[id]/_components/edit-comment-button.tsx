@@ -17,6 +17,11 @@ import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { FieldValues, useForm } from "react-hook-form";
+import schema from "../_schemas/comment-form-schema";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+type FormData = z.infer<typeof schema>;
 
 interface Props {
   comment: MessageComment;
@@ -24,18 +29,28 @@ interface Props {
 
 const EditCommentButton = ({ comment }: Props) => {
   const [isPending, setIsPending] = useState<boolean>(false);
-  const { control, handleSubmit, register } = useForm();
+  const {
+    control,
+    handleSubmit,
+    register,
+    formState: { errors },
+  } = useForm<FormData>({
+    resolver: zodResolver(schema),
+  });
   const router = useRouter();
 
   const onSubmit = (fieldValues: FieldValues) => {
-    setIsPending(true);
-    const updatedComment = { ...comment, comment: fieldValues.comment };
-    console.log(updatedComment);
-    axios
-      .put(`/api/messages/comments/${comment.id}`, updatedComment)
-      .then(() => router.refresh())
-      .catch((e) => console.log(e))
-      .finally(() => setIsPending(false));
+    if (comment.comment !== fieldValues.comment) {
+      setIsPending(true);
+      const updatedComment = { ...comment, comment: fieldValues.comment };
+      console.log(updatedComment);
+
+      axios
+        .put(`/api/messages/comments/${comment.id}`, updatedComment)
+        .then(() => router.refresh())
+        .catch((e) => console.log(e))
+        .finally(() => setIsPending(false));
+    }
   };
 
   return (
@@ -59,12 +74,19 @@ const EditCommentButton = ({ comment }: Props) => {
               rows={10}
               {...register("comment")}
             />
+            {errors.comment && (
+              <p className="text-destructive mt-2">{errors.comment.message}</p>
+            )}
           </DialogDescription>
           <DialogFooter>
             <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-2 pt-4">
-              <DialogClose asChild>
-                <Button type="submit">Save</Button>
-              </DialogClose>
+              <Button type="submit">
+                {" "}
+                {isPending && (
+                  <Loader2 className="w-4 h-4 min-w-4 min-h-4 mr-1 animate-spin" />
+                )}
+                Save
+              </Button>
               <DialogClose asChild>
                 <Button type="button">Cancel</Button>
               </DialogClose>

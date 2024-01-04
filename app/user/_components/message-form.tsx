@@ -9,6 +9,12 @@ import { User } from "@prisma/client";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
+import { z } from "zod";
+import { Value } from "@radix-ui/react-select";
+import { zodResolver } from "@hookform/resolvers/zod";
+import schema from "../_schemas/message-form-schema";
+
+type FormData = z.infer<typeof schema>;
 
 interface MessageFormProps {
   messageType: "SUGGESTION" | "COMPLAINT";
@@ -22,15 +28,19 @@ const MessageForm = ({ messageType, sender, recipients }: MessageFormProps) => {
 
   const {
     control,
+
     register,
-    formState: { errors },
+    formState: { errors, isValid },
     handleSubmit,
     reset,
-  } = useForm();
+  } = useForm<FormData>({ resolver: zodResolver(schema) });
+
+  console.log(errors);
 
   const onSubmit = (fieldValues: FieldValues) => {
     router.prefetch("/user/message-submitted");
     setIsSubmitting(true);
+    console.log(fieldValues);
     const newMessage = {
       subject: fieldValues.subject,
       messageBody: fieldValues.messageBody,
@@ -60,6 +70,9 @@ const MessageForm = ({ messageType, sender, recipients }: MessageFormProps) => {
       <div className="flex flex-col space-y-1">
         <label>Recipients</label>
         <RecipientsDropdown control={control} recipients={recipients} />
+        {errors.recipients && (
+          <p className="text-destructive">{errors.recipients.message}</p>
+        )}
       </div>
       <div className="flex flex-col space-y-1">
         <label>Subject</label>
@@ -68,6 +81,9 @@ const MessageForm = ({ messageType, sender, recipients }: MessageFormProps) => {
           placeholder="Please write your subject here..."
           {...register("subject")}
         />
+        {errors.subject && (
+          <p className="text-destructive">{errors.subject.message}</p>
+        )}
       </div>
       <div className="flex flex-col space-y-1">
         <label>Message</label>
@@ -77,6 +93,9 @@ const MessageForm = ({ messageType, sender, recipients }: MessageFormProps) => {
           className="h-56"
           {...register("messageBody")}
         />
+        {errors.messageBody && (
+          <p className="text-destructive">{errors.messageBody.message}</p>
+        )}
       </div>
       <Separator />
       <Button type="submit" disabled={isSubmitting} variant={"secondary"}>

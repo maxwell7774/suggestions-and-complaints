@@ -7,9 +7,13 @@ import {
   FieldValues,
   UseFormRegister,
 } from "react-hook-form";
+import schema from "../_schemas/message-form-schema";
+import { z } from "zod";
+
+type FormData = z.infer<typeof schema>;
 
 interface RecipientsDropdownProps {
-  control: Control<FieldValues, any>;
+  control: Control<FormData, any>;
   recipients: User[];
 }
 
