@@ -11,23 +11,25 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
-import { MessageComment } from "@prisma/client";
 import axios from "axios";
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FieldValues, useForm } from "react-hook-form";
 import schema from "../_schemas/comment-form-schema";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { MessageComment } from "@/classes/message-comment";
+import { User } from "@/classes/user";
 
 type FormData = z.infer<typeof schema>;
 
 interface Props {
-  comment: MessageComment;
+  commentId: string;
 }
 
-const EditCommentButton = ({ comment }: Props) => {
+const EditCommentButton = ({ commentId }: Props) => {
+  const [comment, setComment] = useState<MessageComment>();
   const [isPending, setIsPending] = useState<boolean>(false);
   const {
     control,
@@ -39,14 +41,37 @@ const EditCommentButton = ({ comment }: Props) => {
   });
   const router = useRouter();
 
+  useEffect(() => {
+    axios
+      .get(`/api/messages/comments/${commentId}`)
+      .then((res) =>
+        setComment(
+          MessageComment.prismaMapToComment(
+            res.data,
+            User.prismaMapToUser(res.data.commenter)
+          )
+        )
+      );
+  }, []);
+
+  if (!comment) {
+    return null;
+  }
+
   const onSubmit = (fieldValues: FieldValues) => {
-    if (comment.comment !== fieldValues.comment) {
+    if (comment.getCommentMessage() !== fieldValues.comment) {
       setIsPending(true);
-      const updatedComment = { ...comment, comment: fieldValues.comment };
+      const updatedComment = {
+        id: comment.getId(),
+        comment: fieldValues.comment,
+        dateCreated: comment.getDateCreated(),
+        lastUpdated: comment.getDateUpdated(),
+        commenterId: comment.getCommenter().getId(),
+      };
       console.log(updatedComment);
 
       axios
-        .put(`/api/messages/comments/${comment.id}`, updatedComment)
+        .put(`/api/messages/comments/${comment.getId()}`, updatedComment)
         .then(() => router.refresh())
         .catch((e) => console.log(e))
         .finally(() => setIsPending(false));
@@ -70,7 +95,7 @@ const EditCommentButton = ({ comment }: Props) => {
           <DialogDescription>
             <Textarea
               placeholder="Please enter your comment..."
-              defaultValue={comment.comment}
+              defaultValue={comment.getCommentMessage()}
               rows={10}
               {...register("comment")}
             />

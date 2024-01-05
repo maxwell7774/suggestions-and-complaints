@@ -9,6 +9,7 @@ export async function GET(
 ) {
   const messageComment = await prismaClient.messageComment.findUnique({
     where: { id: params.id },
+    include: { commenter: true },
   });
   if (!messageComment) {
     return NextResponse.json(

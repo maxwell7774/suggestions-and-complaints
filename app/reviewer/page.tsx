@@ -8,11 +8,50 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { prismaClient } from "@/prisma-client";
+import { Message as PrismaMessage } from "@prisma/client";
+import { Complaint } from "@/classes/message/complaint";
+import { Suggestion } from "@/classes/message/suggestion";
+import { Message } from "@/classes/message/message";
 import Link from "next/link";
 import React from "react";
+import { User } from "@/classes/user";
+import { MessageComment } from "@/classes/message-comment";
 
 const ReviewerPage = async () => {
-  const messages = await prismaClient.message.findMany();
+  const messages: Message[] = (
+    await prismaClient.message.findMany({
+      include: {
+        comments: { include: { commenter: true } },
+        recipients: true,
+        sender: true,
+      },
+    })
+  ).map((message: any) => {
+    if (message.messageType === "COMPLAINT") {
+      return Complaint.prismaMapToComplaint(
+        message,
+        message.comments.map((comment: any) =>
+          MessageComment.prismaMapToComment(comment, comment.commenter)
+        ),
+        message.recipients.map((recipient: any) =>
+          User.prismaMapToUser(recipient)
+        )
+      );
+    }
+    return Suggestion.prismaMapToSuggestion(
+      message,
+      User.prismaMapToUser(message.sender),
+      message.comments.map((comment: any) =>
+        MessageComment.prismaMapToComment(comment, comment.commenter)
+      ),
+      message.recipients.map((recipient: any) =>
+        User.prismaMapToUser(recipient)
+      )
+    );
+  });
+
+  console.log(messages);
+  console.log(typeof messages[0]);
 
   return (
     <div className="flex justify-center h-full w-full">
@@ -38,29 +77,27 @@ const ReviewerPage = async () => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {messages.map((message) => (
-                <TableRow key={message.id}>
+              {messages.map((message: Message) => (
+                <TableRow key={message.getId()}>
                   <TableCell className="hidden md:table-cell">
-                    {message.id}
+                    {message.getId()}
                   </TableCell>
                   <TableCell className="hidden sm:table-cell">
-                    {message.messageType === "SUGGESTION"
-                      ? "Suggestion"
-                      : "Complaint"}
+                    {(message as Suggestion) ? "Suggestion" : "Complaint"}
                   </TableCell>
                   <TableCell>
                     <Link
                       className="hover:text-neutral-500 underline transition-colors"
-                      href={`/reviewer/${message.id}`}
+                      href={`/reviewer/${message.getId()}`}
                     >
-                      {message.subject}
+                      {message.getSubject()}
                     </Link>
                   </TableCell>
                   <TableCell className="hidden sm:table-cell">
-                    {message.dateCreated.toLocaleString()}
+                    {message.getDateCreated().toLocaleString()}
                   </TableCell>
                   <TableCell className="hidden md:table-cell">
-                    {message.dateUpdated.toLocaleString()}
+                    {message.getDateUpdated().toLocaleString()}
                   </TableCell>
                 </TableRow>
               ))}

@@ -1,13 +1,13 @@
 import React from "react";
 import AddCommentForm from "./add-comment-form";
 import CommentLine from "./comment-line";
-import { MessageComment } from "@prisma/client";
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { MessageComment } from "@/classes/message-comment";
 
 interface Props {
   messageId: string;
-  comments: any[];
+  comments: MessageComment[];
   userId: string;
 }
 
@@ -18,12 +18,11 @@ const CommentsPanel = ({ messageId, comments, userId }: Props) => {
       <Separator />
       <ScrollArea className="max-h-64">
         <div className="flex flex-col space-y-3">
-          {comments.map((comment) => (
+          {comments.map((comment: MessageComment) => (
             <CommentLine
               userId={userId}
               comment={comment}
-              commenter={comment.commenter}
-              key={comment.id}
+              key={comment.getId()}
             />
           ))}
         </div>
