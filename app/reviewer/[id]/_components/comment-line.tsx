@@ -2,7 +2,6 @@ import React from "react";
 import DeleteCommentButton from "./delete-comment-button";
 import EditCommentButton from "./edit-comment-button";
 import { MessageComment } from "@/classes/message-comment";
-import { User } from "@/classes/user";
 
 interface Props {
   comment: MessageComment;

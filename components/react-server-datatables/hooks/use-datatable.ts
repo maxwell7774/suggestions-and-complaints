@@ -1,11 +1,8 @@
+import PagedList from "@/lib/paged-list";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { useSession } from "next-auth/react";
-import { Session } from "next-auth/types";
 import { useState } from "react";
 import DatatableParams from "../datatable-params";
-import PagedList from "@/lib/paged-list";
-import { Message } from "@prisma/client";
 
 interface DatatableProps<Type> {
   apiUrl: string;

@@ -1,9 +1,9 @@
-// import { ToastDestructive, ToastSuccess } from "@/components/toast-variants";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
-// import { toast } from "sonner";
+import { toast } from "sonner";
 import DatatableParams from "../datatable-params";
 import axios from "axios";
+import { ToastDestructive, ToastSuccess } from "@/components/toast-variants";
 
 //Update row hook
 //Uses optimistic updating
@@ -24,14 +24,14 @@ export function useUpdateRow(datatableParams: DatatableParams) {
       );
     },
     onSuccess: () => {
-      // toast.custom((toastId) => (
-      //   <ToastSuccess description="Update successful" toastId={toastId} />
-      // ));
+      toast.custom((toastId) => (
+        <ToastSuccess description="Update successful" toastId={toastId} />
+      ));
     },
     onError: (err, editedRow, context) => {
-      // toast.custom((toastId) => (
-      //   <ToastDestructive description="Update unsuccessful" toastId={toastId} />
-      // ));
+      toast.custom((toastId) => (
+        <ToastDestructive description="Update unsuccessful" toastId={toastId} />
+      ));
     },
     onSettled: () => {
       queryClient.invalidateQueries({

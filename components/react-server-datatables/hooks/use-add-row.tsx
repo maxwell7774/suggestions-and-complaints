@@ -1,8 +1,6 @@
 import { ToastDestructive, ToastSuccess } from "@/components/toast-variants";
-import axiosClient from "@/lib/axios-client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
-import { Session } from "next-auth";
 import { useSession } from "next-auth/react";
 import { toast } from "sonner";
 
@@ -18,7 +16,7 @@ export function useAddRow(apiUrl: string, primaryKey: string) {
     mutationFn: (newRow) => {
       console.log(newRow);
       console.log(apiUrl);
-      return axiosClient.post(apiUrl, newRow, session);
+      return axios.post(apiUrl, newRow);
     },
     onMutate: async (newRow: any) => {
       await queryClient.cancelQueries({ queryKey: [apiUrl] });

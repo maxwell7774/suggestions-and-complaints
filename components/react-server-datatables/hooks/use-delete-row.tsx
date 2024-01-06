@@ -1,8 +1,6 @@
 import { ToastDestructive, ToastSuccess } from "@/components/toast-variants";
-import axiosClient from "@/lib/axios-client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
-import { useSession } from "next-auth/react";
 import { toast } from "sonner";
 
 //Delete row hook
@@ -15,15 +13,11 @@ export function useDeleteRow(
   setSelectedRow: (newSelectedRow: any) => void
 ) {
   const queryClient = useQueryClient();
-  const { status, data: session } = useSession();
 
   return useMutation({
     mutationKey: [apiUrl],
     mutationFn: () => {
-      return axiosClient.delete(
-        apiUrl + "/" + selectedRow[primaryKey],
-        session
-      );
+      return axios.delete(apiUrl + "/" + selectedRow[primaryKey]);
     },
     onMutate: async () => {
       await queryClient.cancelQueries({ queryKey: [apiUrl] });

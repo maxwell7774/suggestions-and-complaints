@@ -1,5 +1,4 @@
 import { Message, MessageType } from "@/classes/message/message";
-import { Suggestion } from "@/classes/message/suggestion";
 import { User } from "@/classes/user";
 import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
@@ -12,8 +11,6 @@ interface Props {
 }
 
 const MessageDetailsPanel = ({ message, sender, recipients }: Props) => {
-  // console.log(recipients);
-
   return (
     <Card className="h-full min-w-min min-h-96">
       <div className="flex flex-col">

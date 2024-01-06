@@ -8,6 +8,7 @@ import Footer from "@/components/footer";
 import { SessionProvider } from "next-auth/react";
 import { auth } from "@/auth";
 import QueryClientProvider from "@/components/query-client-provider";
+import { Toaster } from "@/components/ui/sonner";
 
 export const fontSans = FontSans({
   subsets: ["latin"],
@@ -45,6 +46,7 @@ export default async function RootLayout({
                 <main className="pt-16 px-3">{children}</main>
                 <Footer />
               </article>
+              <Toaster />
             </ThemeProvider>
           </SessionProvider>
         </QueryClientProvider>
