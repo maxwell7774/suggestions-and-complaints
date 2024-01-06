@@ -18,7 +18,7 @@ const UserPage = async () => {
 
   return (
     <div className="h-full w-full flex justify-center">
-      <div className="w-full max-w-screen-lg py-5">
+      <div className="w-full max-w-screen-xl py-5">
         {user ? (
           <MessageSelect
             sender={user}

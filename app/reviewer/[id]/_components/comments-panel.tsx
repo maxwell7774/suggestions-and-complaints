@@ -7,11 +7,14 @@ import { MessageComment } from "@/classes/message-comment";
 
 interface Props {
   messageId: string;
-  comments: MessageComment[];
+  comments: MessageComment[] | undefined;
   userId: string;
 }
 
 const CommentsPanel = ({ messageId, comments, userId }: Props) => {
+  if (!comments) {
+    return null;
+  }
   return (
     <div className="flex flex-col space-y-5 sm:col-span-3">
       <AddCommentForm messageId={messageId} userId={userId} />

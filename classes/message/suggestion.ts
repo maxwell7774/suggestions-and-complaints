@@ -1,10 +1,10 @@
 import { MessageComment } from "../message-comment";
 import { User } from "../user";
-import { Message } from "./message";
+import { Message, MessageType } from "./message";
 import { Message as PrismaMessage } from "@prisma/client";
 
 export class Suggestion extends Message {
-  private sender: User;
+  private sender?: User;
 
   constructor(
     id: string,
@@ -12,14 +12,15 @@ export class Suggestion extends Message {
     messageBody: string,
     dateCreated: Date,
     dateUpdated: Date,
-    sender: User,
-    comments: MessageComment[],
-    recipients: User[]
+    sender?: User,
+    comments?: MessageComment[],
+    recipients?: User[]
   ) {
     super(
       id,
       subject,
       messageBody,
+      MessageType.SUGGESTION,
       dateCreated,
       dateUpdated,
       comments,
@@ -28,13 +29,13 @@ export class Suggestion extends Message {
     this.sender = sender;
   }
 
-  public getSender(): User {
+  public getSender(): User | undefined {
     return this.sender;
   }
 
   public static prismaMapToSuggestion(
     prismaMessage: PrismaMessage,
-    sender: User,
+    sender: User | undefined,
     comments: MessageComment[],
     recipients: User[]
   ): Suggestion {

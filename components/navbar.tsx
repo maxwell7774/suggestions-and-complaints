@@ -52,7 +52,7 @@ const Navbar = () => {
     <>
       <nav className="sm:hidden flex flex-col fixed top-0 z-50 justify-center items-center border-b backdrop-blur-md shadow-sm w-full min-w-min">
         <div className="flex items-center justify-center w-full space-x-1 h-16 px-3">
-          <div className="flex items-center justify-between max-w-screen-lg w-full space-x-5">
+          <div className="flex items-center justify-between max-w-screen-xl w-full space-x-5">
             <Link href={"/"}>
               <div className="flex items-center gap-x-1.5 font-semibold hover:cursor-pointer">
                 <Clipboard className="w-10 h-10" />
@@ -121,7 +121,7 @@ const Navbar = () => {
       </nav>
 
       <nav className="hidden sm:flex fixed top-0 z-50 px-3 h-16 justify-center items-center border-b backdrop-blur-md shadow-sm w-full">
-        <div className="flex items-center justify-between max-w-screen-lg w-full space-x-5">
+        <div className="flex items-center justify-between max-w-screen-xl w-full space-x-5">
           <Link href={"/"}>
             <div className="flex items-center gap-x-1.5 font-semibold hover:cursor-pointer">
               <Clipboard className="w-10 h-10" />

@@ -1,6 +1,6 @@
 import { MessageComment } from "../message-comment";
 import { User } from "../user";
-import { Message } from "./message";
+import { Message, MessageType } from "./message";
 import { Message as PrismaMessage } from "@prisma/client";
 
 export class Complaint extends Message {
@@ -17,6 +17,7 @@ export class Complaint extends Message {
       id,
       subject,
       messageBody,
+      MessageType.COMPLAINT,
       dateCreated,
       dateUpdated,
       comments,

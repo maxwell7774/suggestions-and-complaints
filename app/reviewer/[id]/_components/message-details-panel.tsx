@@ -1,4 +1,4 @@
-import { Message } from "@/classes/message/message";
+import { Message, MessageType } from "@/classes/message/message";
 import { Suggestion } from "@/classes/message/suggestion";
 import { User } from "@/classes/user";
 import { Card } from "@/components/ui/card";
@@ -7,11 +7,13 @@ import React from "react";
 
 interface Props {
   message: Message;
-  sender: User | null;
-  recipients: User[] | null;
+  sender: User | null | undefined;
+  recipients: User[] | undefined;
 }
 
 const MessageDetailsPanel = ({ message, sender, recipients }: Props) => {
+  // console.log(recipients);
+
   return (
     <Card className="h-full min-w-min min-h-96">
       <div className="flex flex-col">
@@ -28,7 +30,11 @@ const MessageDetailsPanel = ({ message, sender, recipients }: Props) => {
         <Separator />
         <div className="flex items-center space-x-2 p-3">
           <span className="font-semibold">Type:</span>
-          <span>{(message as Suggestion) ? "Suggestion" : "Complaint"}</span>
+          <span>
+            {message.getMessageType() === MessageType.SUGGESTION
+              ? "Suggestion"
+              : "Complaint"}
+          </span>
         </div>
         <Separator />
         <div className="flex items-center space-x-2 p-3 ">

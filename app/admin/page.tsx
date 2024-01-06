@@ -17,7 +17,7 @@ const AdminPage = async () => {
 
   return (
     <div className="flex justify-center w-full h-full">
-      <div className="w-full max-w-screen-lg">
+      <div className="w-full max-w-screen-xl">
         <div className="flex flex-col space-y-5 my-5">
           <h1 className="text-2xl font-bold text-center">User Permissions</h1>
           <AdminTable users={users} />

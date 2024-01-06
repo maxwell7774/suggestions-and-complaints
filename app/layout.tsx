@@ -7,6 +7,7 @@ import Navbar from "@/components/navbar";
 import Footer from "@/components/footer";
 import { SessionProvider } from "next-auth/react";
 import { auth } from "@/auth";
+import QueryClientProvider from "@/components/query-client-provider";
 
 export const fontSans = FontSans({
   subsets: ["latin"],
@@ -31,20 +32,22 @@ export default async function RootLayout({
       <body
         className={cn("bg-background font-sans antialiased", fontSans.variable)}
       >
-        <SessionProvider session={session}>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
-          >
-            <article className="min-h-full grid grid-rows-1">
-              <Navbar />
-              <main className="pt-16 px-3">{children}</main>
-              <Footer />
-            </article>
-          </ThemeProvider>
-        </SessionProvider>
+        <QueryClientProvider>
+          <SessionProvider session={session}>
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="system"
+              enableSystem
+              disableTransitionOnChange
+            >
+              <article className="min-h-full grid grid-rows-1">
+                <Navbar />
+                <main className="pt-16 px-3">{children}</main>
+                <Footer />
+              </article>
+            </ThemeProvider>
+          </SessionProvider>
+        </QueryClientProvider>
       </body>
     </html>
   );

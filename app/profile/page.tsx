@@ -7,7 +7,7 @@ const ProfilePage = async () => {
 
   return (
     <div className="flex items-center h-full flex-col">
-      <div className="w-full max-w-screen-lg grid grid-cols-4 justify-center items-center mt-5">
+      <div className="w-full max-w-screen-xl grid grid-cols-4 justify-center items-center mt-5">
         <Avatar className="w-32 h-32 col-span-1">
           <AvatarFallback>
             {session?.user.name ? session.user.name.substring(0, 1) : "?"}

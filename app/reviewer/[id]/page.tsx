@@ -1,8 +1,7 @@
 import { auth } from "@/auth";
 import isAuthorized from "@/lib/is-authorized";
 import { prismaClient } from "@/prisma-client";
-import { Message as PrismaMessage, User as PrismaUser } from "@prisma/client";
-import { Message } from "@/classes/message/message";
+import { Message, MessageType } from "@/classes/message/message";
 import { Complaint } from "@/classes/message/complaint";
 import { Suggestion } from "@/classes/message/suggestion";
 import { redirect } from "next/navigation";
@@ -46,6 +45,8 @@ const MessageDetailsPage = async ({ params: { id } }: MessageDetailsProps) => {
     );
   }
 
+  console.log(prismaMessage.recipients);
+
   const message: Message =
     prismaMessage.messageType === "COMPLAINT"
       ? Complaint.prismaMapToComplaint(
@@ -57,7 +58,7 @@ const MessageDetailsPage = async ({ params: { id } }: MessageDetailsProps) => {
             )
           ),
           prismaMessage.recipients.map((recipient: any) =>
-            User.prismaMapToUser(recipient)
+            User.prismaMapToUser(recipient.recipient)
           )
         )
       : Suggestion.prismaMapToSuggestion(
@@ -70,14 +71,15 @@ const MessageDetailsPage = async ({ params: { id } }: MessageDetailsProps) => {
             )
           ),
           prismaMessage.recipients.map((recipient: any) =>
-            User.prismaMapToUser(recipient)
+            User.prismaMapToUser(recipient.recipient)
           )
         );
 
+  console.log(message.getRecipients());
   return (
     <div className="flex flex-col items-center justify-start w-full h-full">
       <h1 className="text-center my-5 text-2xl font-bold">Message Details</h1>
-      <div className="max-w-screen-lg w-full grid grid-cols-1 sm:grid-cols-3 auto-rows-min gap-5 mb-5">
+      <div className="max-w-screen-xl w-full grid grid-cols-1 sm:grid-cols-3 auto-rows-min gap-5 mb-5">
         <div className="flex flex-col space-y-5 sm:col-span-2">
           <MessageSubject subject={message.getSubject()} />
           <MessageBody messageBody={message.getMessageBody()} />
@@ -87,7 +89,7 @@ const MessageDetailsPage = async ({ params: { id } }: MessageDetailsProps) => {
             message={message}
             recipients={message.getRecipients()}
             sender={
-              (message as Suggestion)
+              message.getMessageType() === MessageType.SUGGESTION
                 ? (message as Suggestion).getSender()
                 : null
             }
@@ -99,7 +101,7 @@ const MessageDetailsPage = async ({ params: { id } }: MessageDetailsProps) => {
             message={message}
             recipients={message.getRecipients()}
             sender={
-              (message as Suggestion)
+              message.getMessageType() === MessageType.SUGGESTION
                 ? (message as Suggestion).getSender()
                 : null
             }
