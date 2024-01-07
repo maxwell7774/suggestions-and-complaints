@@ -20,6 +20,7 @@ interface Props {
   users: User[];
 }
 
+//Admin table that shows user permissions and allows one to change those permissions.
 const AdminTable = ({ users }: Props) => {
   return (
     <Card>
@@ -46,11 +47,15 @@ interface AdminTableRowProps {
   user: User;
 }
 
+//This is the rows for the admin table
 const AdminTableRow = ({ user }: AdminTableRowProps) => {
   const [originalUser, setOriginalUser] = useState<User>(user);
   const [updatedUser, setUserChanges] = useState<User>(user);
   const router = useRouter();
 
+  //Function to save the changes
+  //Sends api request to the backend with the updated user
+  //Does optimistic updating and reverts back if failure occurs
   const handleSaveChanges = () => {
     const originalUserBeforeSave = originalUser;
     setOriginalUser(updatedUser);

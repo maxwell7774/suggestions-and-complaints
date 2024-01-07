@@ -20,20 +20,26 @@ import { Message as PrismaMessage } from "@prisma/client";
 import Link from "next/link";
 import SkeletonRows from "./skeleton-rows";
 
+//Messages datatable that allows for searching and paginating messages send in by the user
+//Where I'm using typescript and trying to provide examples of inheritance using class,
+//it isn't the most elegant solution converting from the prisma messages object to the
+//classes I made, but it should fulfill the requirement
 const MessagesDatatable = () => {
+  //Sends the api url and primary key of the table/data that we would like to retrieve
   const {
-    datatableParams,
-    editMode,
-    query: { data, isPlaceholderData },
-    setDatatableParams,
-    setEditMode,
+    datatableParams, //The datatable params that allow for searching, pagination, and updating the query keys
+    query: { data, isPlaceholderData }, //The data returned from the backend and is placeholder data from the keep previous data as paginating
+    setDatatableParams, //Allows for updating the datatableParams and calling for new data from the server
   } = useDatatable<PrismaMessage>({
-    apiUrl: "/api/messages",
-    primaryKeyProperty: "id",
+    //Hook for retrieving all the above information
+    apiUrl: "/api/messages", //backend endpoint
+    primaryKeyProperty: "id", //primary key for the data
   });
 
+  //Sets up the Message array so that I can convert the prisma messages to my class messages
   let messages: Message[] | null = null;
 
+  //if there is data convert the messages
   if (data) {
     messages = data.items.map((message) => {
       if (message.messageType === "COMPLAINT") {
@@ -98,6 +104,7 @@ const MessagesDatatable = () => {
             </DatatableHeaderRow>
           </DatatableHeader>
           <DatatableBody>
+            {/* If there are messages, render the datatable rows */}
             {messages ? (
               messages.map((message) => (
                 <DatatableRow key={message.getId()} rowdata={message}>
@@ -105,7 +112,7 @@ const MessagesDatatable = () => {
                     {message.getId()}
                   </DatatableCell>
                   <DatatableCell className="hidden sm:table-cell">
-                    {(message as Suggestion) ? "Suggestion" : "Complaint"}
+                    {(message as Complaint) ? "Complaint" : "Suggestion"}
                   </DatatableCell>
                   <DatatableCell>
                     <Link
@@ -124,6 +131,7 @@ const MessagesDatatable = () => {
                 </DatatableRow>
               ))
             ) : (
+              // If there are no messages then render skeleton
               <SkeletonRows rows={datatableParams.pageSize} cols={5} />
             )}
           </DatatableBody>

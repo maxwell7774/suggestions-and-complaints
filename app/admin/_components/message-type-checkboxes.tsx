@@ -8,6 +8,8 @@ interface Props {
   onUserChanges: (updatedUser: User) => void;
 }
 
+//These are the checkboxes that show up in the admin table
+//Allows an admin to choose what message types users can recieve
 const MessageTypeCheckboxes = ({ user, onUserChanges }: Props) => {
   return (
     <div className="flex flex-col items-center space-y-2">

@@ -5,14 +5,17 @@ import { redirect } from "next/navigation";
 import React from "react";
 import AdminTable from "./_components/admin-table";
 
+//This is the admin page
 const AdminPage = async () => {
   const session = await auth();
   const authorizedRoles = ["ADMIN"];
 
+  //Checks to see if the logged in user has the correct role for this page
   if (!isAuthorized(session, authorizedRoles)) {
-    redirect("/auth/not-authorized");
+    redirect("/not-authorized");
   }
 
+  //Grabs data from the backend before sending everything to the client
   const users = await prismaClient.user.findMany({ orderBy: { name: "asc" } });
 
   return (

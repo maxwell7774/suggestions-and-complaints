@@ -23,10 +23,12 @@ interface Props {
   commentMessage: string;
 }
 
+//Delete component that shows on the comment line
 const DeleteCommentButton = ({ commentId, commentMessage }: Props) => {
   const [pendingDelete, setPendingDelete] = useState<boolean>(false);
-  const router = useRouter();
+  const router = useRouter(); //router for refreshing the page after the comment is deleted
 
+  //Sends the delete request to the backend
   const handleDelete = () => {
     setPendingDelete(true);
     axios
@@ -36,6 +38,7 @@ const DeleteCommentButton = ({ commentId, commentMessage }: Props) => {
       .finally(() => setPendingDelete(false));
   };
 
+  //Handles displaying the confirmation modal
   return (
     <Dialog>
       <DialogTrigger asChild>

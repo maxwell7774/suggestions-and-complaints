@@ -8,6 +8,8 @@ interface Props {
   userId: string;
 }
 
+//Comment line component that displays the comment in a blockquote
+//and gives access to the edit and delete buttons for that comment
 const CommentLine = ({ comment, userId }: Props) => {
   return (
     <div

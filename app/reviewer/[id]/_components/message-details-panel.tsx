@@ -10,6 +10,7 @@ interface Props {
   recipients: User[] | undefined;
 }
 
+//Message details panel that shows some meta data of the mess
 const MessageDetailsPanel = ({ message, sender, recipients }: Props) => {
   return (
     <Card className="h-full min-w-min min-h-96">

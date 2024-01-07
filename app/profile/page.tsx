@@ -2,6 +2,7 @@ import { auth } from "@/auth";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import React from "react";
 
+//Profile page that shows the signed in user's information
 const ProfilePage = async () => {
   const session = await auth();
 

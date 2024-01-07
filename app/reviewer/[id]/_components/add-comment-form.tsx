@@ -9,13 +9,17 @@ import { FieldValues, useForm } from "react-hook-form";
 import schema from "../_schemas/comment-form-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 
+//Get the form data shape from zod
 type FormData = Zod.infer<typeof schema>;
 
 interface Props {
   messageId: string;
   userId: string;
 }
+
+//Add comment form
 const AddCommentForm = ({ messageId, userId }: Props) => {
+  //React hook form that handles refs to inputs and has a validation resolver based on the zod schema
   const {
     control,
     register,
@@ -26,6 +30,7 @@ const AddCommentForm = ({ messageId, userId }: Props) => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
+  //Submits the form (comment) to the backend using axios
   const onSubmit = (fieldValues: FieldValues) => {
     setIsLoading(true);
     axios

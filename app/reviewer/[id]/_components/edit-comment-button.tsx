@@ -22,25 +22,31 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { MessageComment } from "@/classes/message-comment";
 import { User } from "@/classes/user";
 
+//Form data shape for the comment
 type FormData = z.infer<typeof schema>;
 
 interface Props {
   commentId: string;
 }
 
+//Edit button for a comment line
+//Displays the modal for editing the comment when clicked
 const EditCommentButton = ({ commentId }: Props) => {
   const [comment, setComment] = useState<MessageComment>();
   const [isPending, setIsPending] = useState<boolean>(false);
+
+  //React hook form
   const {
     control,
     handleSubmit,
     register,
     formState: { errors },
   } = useForm<FormData>({
-    resolver: zodResolver(schema),
+    resolver: zodResolver(schema), //Sends the validation schema to check the data against
   });
   const router = useRouter();
 
+  //Gets the comment when the component loads
   useEffect(() => {
     axios
       .get(`/api/messages/comments/${commentId}`)
@@ -54,10 +60,12 @@ const EditCommentButton = ({ commentId }: Props) => {
       );
   }, []);
 
+  //If there is no comment don't render anything
   if (!comment) {
     return null;
   }
 
+  //Handles submission to update the comment
   const onSubmit = (fieldValues: FieldValues) => {
     if (comment.getCommentMessage() !== fieldValues.comment) {
       setIsPending(true);
@@ -78,6 +86,7 @@ const EditCommentButton = ({ commentId }: Props) => {
     }
   };
 
+  //Edit comment button and modal
   return (
     <Dialog>
       <DialogTrigger asChild>

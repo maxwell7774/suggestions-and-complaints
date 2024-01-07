@@ -7,6 +7,8 @@ interface Props {
   cols: number;
 }
 
+//Skeleton rows for a datatable
+//Can be sent a number for rows and cols to build the skeleton
 const SkeletonRows = ({ rows, cols }: Props) => {
   let skeletonRows: React.ReactNode[] = [];
 

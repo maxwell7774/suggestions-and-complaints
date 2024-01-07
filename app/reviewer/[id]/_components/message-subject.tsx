@@ -4,6 +4,7 @@ interface Props {
   subject: string;
 }
 
+//Displays the message subject on the message details page
 const MessageSubject = ({ subject }: Props) => {
   return (
     <div className="flex flex-col space-y-2">

@@ -1,5 +1,6 @@
 import { z } from "zod";
 
+//Shape of the comments and error messages to display when form fails validation using the scheme
 const schema = z.object({
   comment: z
     .string()

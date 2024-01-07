@@ -17,14 +17,18 @@ interface MessageDetailsProps {
   params: { id: string };
 }
 
+//Message Details Page
 const MessageDetailsPage = async ({ params: { id } }: MessageDetailsProps) => {
   const session = await auth();
   const authorizedRoles = ["REVIEWER", "ADMIN"];
 
+  //Checks to see if the user is authorized to be on the page
   if (!isAuthorized(session, authorizedRoles)) {
     redirect("/not-authorized");
   }
 
+  //Gets the message thats id is from the url params
+  //Includes the recipients, sender, and comments/commenters
   const prismaMessage = await prismaClient.message.findUnique({
     where: { id: id },
     include: {
@@ -37,6 +41,7 @@ const MessageDetailsPage = async ({ params: { id } }: MessageDetailsProps) => {
     },
   });
 
+  //If no message is found then render no message found
   if (!prismaMessage) {
     return (
       <div className="flex justify-center w-full h-full items-center">
@@ -45,8 +50,8 @@ const MessageDetailsPage = async ({ params: { id } }: MessageDetailsProps) => {
     );
   }
 
-  console.log(prismaMessage.recipients);
-
+  // Converts the message from a prisma message type to my custom Message class
+  // This could be a Complaint or Suggestion class being assigned to the Message type
   const message: Message =
     prismaMessage.messageType === "COMPLAINT"
       ? Complaint.prismaMapToComplaint(
@@ -75,7 +80,6 @@ const MessageDetailsPage = async ({ params: { id } }: MessageDetailsProps) => {
           )
         );
 
-  console.log(message.getRecipients());
   return (
     <div className="flex flex-col items-center justify-start w-full h-full">
       <h1 className="text-center my-5 text-2xl font-bold">Message Details</h1>

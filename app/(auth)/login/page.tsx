@@ -8,6 +8,7 @@ interface Props {
   searchParams: { referrer: string };
 }
 
+//Login page that displays the login buttons and logo.
 const LoginPage = async ({ searchParams: { referrer } }: Props) => {
   const session = await auth();
 

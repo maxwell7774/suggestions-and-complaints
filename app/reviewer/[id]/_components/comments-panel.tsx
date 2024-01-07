@@ -11,6 +11,7 @@ interface Props {
   userId: string;
 }
 
+//This is the comments panel that holds the comment form and all the comment lines
 const CommentsPanel = ({ messageId, comments, userId }: Props) => {
   if (!comments) {
     return null;

@@ -5,6 +5,7 @@ interface Props {
   messageBody: string;
 }
 
+//Displays the message body on the message details page
 const MessageBody = ({ messageBody }: Props) => {
   return (
     <div className="flex flex-col space-y-2">

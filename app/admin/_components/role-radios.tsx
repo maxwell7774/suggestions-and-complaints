@@ -8,6 +8,8 @@ interface Props {
   onUserChanges: (updatedUser: User) => void;
 }
 
+//These are the radios that show up in the admin table
+//These allow the updating of roles for users
 const RoleRadios = ({ user, onUserChanges }: Props) => {
   return (
     <RadioGroup
