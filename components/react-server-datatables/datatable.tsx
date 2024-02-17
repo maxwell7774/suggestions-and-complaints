@@ -1,12 +1,24 @@
 import * as React from "react";
 import { Table } from "../ui/table";
+import { Card } from "../ui/card";
 
-const Datatable = React.forwardRef<
-  HTMLTableElement,
-  React.HTMLAttributes<HTMLTableElement>
->(({ className, ...props }, ref) => (
-  <Table ref={ref} className={className} {...props} />
-));
-Datatable.displayName = "Datatable";
+interface DatatableRootProps extends React.HTMLAttributes<HTMLTableElement> {
+  bordered?: boolean;
+}
 
-export default Datatable;
+const DatatableRoot = React.forwardRef<HTMLTableElement, DatatableRootProps>(
+  ({ bordered = true, ...props }: DatatableRootProps, ref) => {
+    if (bordered) {
+      return (
+        <Card className="overflow-hidden">
+          <Table ref={ref} {...props} />
+        </Card>
+      );
+    }
+
+    return <Table ref={ref} {...props} />;
+  }
+);
+DatatableRoot.displayName = "DatatableRoot";
+
+export default DatatableRoot;

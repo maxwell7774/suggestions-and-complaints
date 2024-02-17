@@ -1,24 +1,23 @@
 import React, { useState } from "react";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-import DatatableParams from "./datatable-params";
 import { cn } from "@/lib/utils";
+import { Datatable } from ".";
 
 interface Props extends React.TdHTMLAttributes<HTMLInputElement> {
-  datatableParams: DatatableParams;
-  setDatatableParams: (newDatatableParams: DatatableParams) => void;
+  datatable: Datatable;
 }
 
 const DatatableSearchInput = ({
-  datatableParams,
-  setDatatableParams,
+  datatable: { searchTerm, setSearchTerm, firstPage },
   className,
 }: Props) => {
-  const [value, setValue] = useState<string>(datatableParams.searchTerm);
+  const [value, setValue] = useState<string>(searchTerm);
 
   const handleSearch = () => {
-    if (value !== datatableParams.searchTerm) {
-      setDatatableParams({ ...datatableParams, searchTerm: value, page: 1 });
+    if (value !== searchTerm) {
+      setSearchTerm(value);
+      firstPage();
     }
   };
 
@@ -35,7 +34,7 @@ const DatatableSearchInput = ({
         }}
         placeholder="Search..."
       />
-      <Button size={"sm"} className="h-8" onClick={handleSearch}>
+      <Button size={"sm"} onClick={handleSearch}>
         Search
       </Button>
     </div>

@@ -1,3 +1,4 @@
+import { SearchFilter } from "@/components/react-server-datatables";
 import PagedList from "@/lib/paged-list";
 import { prismaClient } from "@/prisma-client";
 import { Message } from "@prisma/client";
@@ -6,36 +7,51 @@ import { NextRequest, NextResponse } from "next/server";
 interface SearchParams {
   page: number;
   pageSize: number;
+  sortBy: string;
   sortDir: "asc" | "desc";
-  sortCol: string;
   searchTerm: string;
-  searchCol: string;
+  searchFields: string[],
+  searchFilters: SearchFilter[]
 }
 
 const parseSearchParams = (searchParams: URLSearchParams): SearchParams => {
   return {
-    page: Number(searchParams.get("page")) || 1,
-    pageSize: Number(searchParams.get("pageSize")) || 10,
+    page: Number(searchParams.get("page")),
+    pageSize: Number(searchParams.get("pageSize")),
+    sortBy: searchParams.get("sortBy") ?? "",
     sortDir: searchParams.get("sortDir") === "desc" ? "desc" : "asc",
-    sortCol: searchParams.get("sortCol") || "id",
-    searchTerm: searchParams.get("searchTerm") || "",
-    searchCol: searchParams.get("searchCol") || "",
+    searchTerm: searchParams.get("searchTerm") ?? "",
+    searchFields: searchParams.get("searchFields") ? JSON.parse(searchParams.get("searchFields")!) : [],
+    searchFilters: searchParams.get("searchFilters") ? JSON.parse(searchParams.get("searchFilters")!) : [],
   };
 };
 
 export async function GET(request: NextRequest) {
-  const { page, pageSize, searchCol, searchTerm, sortCol, sortDir } =
+  const { page, pageSize, sortBy, sortDir, searchTerm, searchFields, searchFilters } =
     parseSearchParams(request.nextUrl.searchParams);
 
+  let where = {};
+
+  if(searchFields.length > 0 && searchTerm){
+    let OR: any[] = [];
+    searchFields.forEach(searchField => {
+      OR.push({[searchField]: {contains: searchTerm}})
+    });
+    where = {OR: OR}
+  }
+  else{
+    where = {OR: [{id: {contains: searchTerm}}, {subject: {contains: searchTerm}}]}
+  }
+
   let messages = await prismaClient.message.findMany({
-    where: { [searchCol]: { contains: searchTerm } },
-    orderBy: [{ [sortCol]: sortDir }, { id: sortDir }],
+    where: where,
+    orderBy: [{ [sortBy]: sortDir }, { id: sortDir }],
     skip: (page - 1) * pageSize,
     take: pageSize,
   });
 
   let totalCount: number = await prismaClient.message.count({
-    where: { [searchCol]: { contains: searchTerm } },
+    where: where,
   });
 
   const data: PagedList<Message> = {

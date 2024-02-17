@@ -10,7 +10,7 @@ const DatatableHeaderRow = React.forwardRef<
   return (
     <TableRow
       ref={ref}
-      className={cn("hover:bg-background", className)}
+      className={cn("hover:bg-inherit", className)}
       {...props}
     />
   );

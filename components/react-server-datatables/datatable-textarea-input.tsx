@@ -1,21 +1,22 @@
-import React, { ChangeEvent } from "react";
+import React from "react";
 import { Input } from "../ui/input";
 import { useUpdateRow } from "./hooks/use-update-row";
+import { Textarea } from "../ui/textarea";
 import { Datatable } from ".";
 import { toast } from "sonner";
 import { ToastDestructive } from "../toast-variants";
 
-interface DatatableDateInputProps
-  extends React.TdHTMLAttributes<HTMLInputElement> {
+interface DatatableTextareaInputProps
+  extends React.TdHTMLAttributes<HTMLTextAreaElement> {
   datatable: Datatable;
   item: any;
   propertyName: string;
   editMode?: boolean;
 }
 
-const DatatableDateInput = React.forwardRef<
-  HTMLInputElement,
-  DatatableDateInputProps
+const DatatableTextareaInput = React.forwardRef<
+  HTMLTextAreaElement,
+  DatatableTextareaInputProps
 >(
   (
     {
@@ -30,7 +31,7 @@ const DatatableDateInput = React.forwardRef<
   ) => {
     const { mutate } = useUpdateRow(apiUrl, primaryKeyField);
 
-    const handleValueChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const handlerBlur = (e: React.FocusEvent<HTMLTextAreaElement, Element>) => {
       if (e.target.value !== props.defaultValue) {
         const updatedItem = {
           ...item,
@@ -55,12 +56,17 @@ const DatatableDateInput = React.forwardRef<
 
     if (editMode) {
       return (
-        <Input type="date" {...props} ref={ref} onChange={handleValueChange} />
+        <Textarea
+          className={className}
+          {...props}
+          ref={ref}
+          onBlur={handlerBlur}
+        />
       );
     }
-    return <div>{props.defaultValue}</div>;
+    return <div className={className}>{props.defaultValue}</div>;
   }
 );
-DatatableDateInput.displayName = "DatatableDateInput";
+DatatableTextareaInput.displayName = "DatatableTextareaInput";
 
-export default DatatableDateInput;
+export default DatatableTextareaInput;

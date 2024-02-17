@@ -7,35 +7,30 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import DatatableParams from "./datatable-params";
+import { Datatable } from ".";
 
 interface Props {
-  datatableParams: DatatableParams;
-  setDatatableParams: (newDatatableParams: DatatableParams) => void;
+  datatable: Datatable;
   pageSizes?: number[];
 }
 
 //Pagesize component that allows the user to view more records
 const DatatablePageSizeSelect = ({
-  datatableParams,
-  setDatatableParams,
+  datatable: { pageSize, setPageSize, firstPage },
   pageSizes = [5, 10, 25, 50, 100, 250],
 }: Props) => {
   return (
     <div className="flex items-center">
       <p className="mr-2 text-xs whitespace-nowrap">Page Size:</p>
       <Select
-        value={datatableParams.pageSize.toString()}
-        onValueChange={(value) =>
-          setDatatableParams({
-            ...datatableParams,
-            page: 1,
-            pageSize: parseInt(value),
-          })
-        }
+        value={pageSize.toString()}
+        onValueChange={(value) => {
+          setPageSize(parseInt(value));
+          firstPage();
+        }}
       >
         <SelectTrigger className="min-w-min h-8 w-14">
-          <SelectValue defaultValue={datatableParams.pageSize.toString()} />
+          <SelectValue defaultValue={pageSize.toString()} />
         </SelectTrigger>
         <SelectContent>
           <SelectGroup>

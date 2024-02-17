@@ -6,30 +6,30 @@ import {
   Datatable,
   DatatableBody,
   DatatableCell,
+  DatatableColumnSearch,
   DatatableHead,
   DatatableHeader,
   DatatableHeaderRow,
   DatatablePageSizeSelect,
   DatatablePagination,
+  DatatableRoot,
   DatatableRow,
   DatatableSearchInput,
 } from "@/components/react-server-datatables";
 import { useDatatable } from "@/components/react-server-datatables/hooks/use-datatable";
-import { Card } from "@/components/ui/card";
 import { Message as PrismaMessage } from "@prisma/client";
 import Link from "next/link";
 import SkeletonRows from "./skeleton-rows";
+import schema from "@/app/user/_schemas/message-form-schema";
 
 const MessagesDatatable = () => {
   const {
-    datatableParams,
-    editMode,
     query: { data, isPlaceholderData },
-    setDatatableParams,
-    setEditMode,
+    datatable,
   } = useDatatable<PrismaMessage>({
     apiUrl: "/api/messages",
-    primaryKeyProperty: "id",
+    primaryKeyField: "id",
+    zodSchema: schema,
   });
 
   let messages: Message[] | null = null;
@@ -45,61 +45,54 @@ const MessagesDatatable = () => {
 
   return (
     <div className="flex flex-col space-y-2">
-      <DatatableSearchInput
-        className="w-full"
-        datatableParams={datatableParams}
-        setDatatableParams={setDatatableParams}
-      />
-      <Card>
-        <Datatable>
-          <DatatableHeader>
-            <DatatableHeaderRow>
-              <DatatableHead
-                className="hidden md:table-cell"
+      <DatatableSearchInput className="w-full" datatable={datatable} />
+      <DatatableRoot>
+        <DatatableHeader>
+          <DatatableHeaderRow>
+            <DatatableHead
+              className="hidden md:table-cell"
+              propertyName={"id"}
+              datatable={datatable}
+              title={"Id"}
+            >
+              <DatatableColumnSearch
                 propertyName={"id"}
-                datatableParams={datatableParams}
-                setDatatableParams={setDatatableParams}
-                isSearchable={true}
-              >
-                Id
-              </DatatableHead>
-              <DatatableHead
-                className="hidden sm:table-cell"
-                propertyName={"messageType"}
-                datatableParams={datatableParams}
-                setDatatableParams={setDatatableParams}
-              >
-                Message Type
-              </DatatableHead>
-              <DatatableHead
-                propertyName={"subject"}
-                datatableParams={datatableParams}
-                setDatatableParams={setDatatableParams}
-                isSearchable={true}
-              >
-                Subject
-              </DatatableHead>
-              <DatatableHead
-                className="hidden sm:table-cell"
-                propertyName={"dateCreated"}
-                datatableParams={datatableParams}
-                setDatatableParams={setDatatableParams}
-              >
-                Date Created
-              </DatatableHead>
-              <DatatableHead
-                className="hidden md:table-cell"
-                propertyName={"dateUpdated"}
-                datatableParams={datatableParams}
-                setDatatableParams={setDatatableParams}
-              >
-                Date Updated
-              </DatatableHead>
-            </DatatableHeaderRow>
-          </DatatableHeader>
-          <DatatableBody>
-            {messages ? (
-              messages.map((message) => (
+                datatable={datatable}
+              />
+            </DatatableHead>
+            <DatatableHead
+              className="hidden sm:table-cell"
+              propertyName={"messageType"}
+              datatable={datatable}
+              title="Message Type"
+            />
+            <DatatableHead
+              propertyName={"subject"}
+              datatable={datatable}
+              title="Subject"
+            >
+              <DatatableColumnSearch
+                propertyName="subject"
+                datatable={datatable}
+              />
+            </DatatableHead>
+            <DatatableHead
+              className="hidden sm:table-cell"
+              propertyName={"dateCreated"}
+              datatable={datatable}
+              title="Created"
+            />
+            <DatatableHead
+              className="hidden md:table-cell"
+              propertyName={"dateUpdated"}
+              title="Updated"
+              datatable={datatable}
+            />
+          </DatatableHeaderRow>
+        </DatatableHeader>
+        <DatatableBody>
+          {messages
+            ? messages.map((message) => (
                 <DatatableRow key={message.getId()} rowdata={message}>
                   <DatatableCell className="hidden md:table-cell">
                     {message.getId()}
@@ -123,25 +116,20 @@ const MessagesDatatable = () => {
                   </DatatableCell>
                 </DatatableRow>
               ))
-            ) : (
-              <SkeletonRows rows={datatableParams.pageSize} cols={5} />
-            )}
-          </DatatableBody>
-        </Datatable>
-      </Card>
+            : null
+              // <SkeletonRows rows={datatable.pageSize} cols={5} />
+          }
+        </DatatableBody>
+      </DatatableRoot>
       <div className="flex w-full justify-end space-x-5">
         <DatatablePageSizeSelect
-          datatableParams={datatableParams}
-          setDatatableParams={setDatatableParams}
+          datatable={datatable}
           pageSizes={[1, 3, 5, 10, 20, 50]}
         />
         <DatatablePagination
-          datatableParams={datatableParams}
-          setDatatableParams={setDatatableParams}
+          datatable={datatable}
           isPlaceholderData={isPlaceholderData}
-          hasNextPage={data ? data.hasNextPage : false}
-          hasPreviousPage={data ? data.hasPreviousPage : false}
-          totalCount={data ? data.totalCount : 0}
+          data={data}
         />
       </div>
     </div>
