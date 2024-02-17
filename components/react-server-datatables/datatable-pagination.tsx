@@ -1,5 +1,4 @@
 import React from "react";
-import DatatableParams from "./datatable-params";
 import { Button } from "../ui/button";
 import {
   ChevronLeft,
@@ -7,40 +6,43 @@ import {
   ChevronsLeft,
   ChevronsRight,
 } from "lucide-react";
+import PagedList from "@/lib/paged-list";
+import { Datatable } from ".";
 
 interface Props {
-  datatableParams: DatatableParams;
-  setDatatableParams: (newDatatableParams: DatatableParams) => void;
+  datatable: Datatable;
   isPlaceholderData: boolean;
-  hasNextPage: boolean;
-  hasPreviousPage: boolean;
-  totalCount: number;
+  data: PagedList<any> | undefined;
 }
 
 const DatatablePagination = ({
-  datatableParams,
-  setDatatableParams,
+  datatable: { page, nextPage, previousPage, lastPage, firstPage, pageSize },
   isPlaceholderData,
-  hasNextPage,
-  hasPreviousPage,
-  totalCount,
+  data = {
+    hasNextPage: false,
+    hasPreviousPage: false,
+    totalCount: 1,
+    items: [],
+    page: 1,
+    pageSize: 1,
+  },
 }: Props) => {
-  const pageCount = Math.ceil(totalCount / datatableParams.pageSize);
+  const { hasNextPage, hasPreviousPage, totalCount } = data;
+
+  const pageCount = Math.ceil(totalCount / pageSize);
 
   return (
     <div className="flex items-center space-x-2 flex-wrap-reverse">
       <p className="text-xs">
-        Page {datatableParams.page} of {pageCount}
+        Page {page} of {pageCount}
       </p>
       <div className="space-x-1">
         <Button
-          className="h-8 w-8"
+          size={"sm"}
+          className="w-8"
           onClick={() => {
             if (!isPlaceholderData && hasPreviousPage) {
-              setDatatableParams({
-                ...datatableParams,
-                page: 1,
-              });
+              firstPage();
             }
           }}
           disabled={!hasPreviousPage}
@@ -48,13 +50,11 @@ const DatatablePagination = ({
           <ChevronsLeft className="min-h-4 min-w-4 w-4 h-4" />
         </Button>
         <Button
-          className="h-8 w-8"
+          size={"sm"}
+          className="w-8"
           onClick={() => {
             if (!isPlaceholderData && hasPreviousPage) {
-              setDatatableParams({
-                ...datatableParams,
-                page: datatableParams.page - 1,
-              });
+              previousPage();
             }
           }}
           disabled={!hasPreviousPage}
@@ -62,13 +62,11 @@ const DatatablePagination = ({
           <ChevronLeft className="min-h-4 min-w-4 w-4 h-4" />
         </Button>
         <Button
-          className="h-8 w-8"
+          size={"sm"}
+          className="w-8"
           onClick={() => {
             if (!isPlaceholderData && hasNextPage) {
-              setDatatableParams({
-                ...datatableParams,
-                page: datatableParams.page + 1,
-              });
+              nextPage();
             }
           }}
           disabled={!hasNextPage}
@@ -76,13 +74,11 @@ const DatatablePagination = ({
           <ChevronRight className="min-h-4 min-w-4 w-4 h-4" />
         </Button>
         <Button
-          className="h-8 w-8"
+          size={"sm"}
+          className="w-8"
           onClick={() => {
             if (!isPlaceholderData && hasNextPage) {
-              setDatatableParams({
-                ...datatableParams,
-                page: pageCount,
-              });
+              lastPage();
             }
           }}
           disabled={!hasNextPage}

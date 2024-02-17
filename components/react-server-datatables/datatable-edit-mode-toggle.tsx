@@ -3,18 +3,17 @@ import * as TogglePrimitive from "@radix-ui/react-toggle";
 import React from "react";
 import { Toggle } from "../ui/toggle";
 import { cn } from "@/lib/utils";
-import DatatableParams from "./datatable-params";
+import { Datatable } from ".";
 
 interface DatatableEditModeToggleProps
   extends React.ComponentPropsWithoutRef<typeof TogglePrimitive.Root> {
-  editMode: boolean;
-  setEditMode: (newEditMode: boolean) => void;
+  datatable: Datatable;
 }
 
 const DatatableEditModeToggle = React.forwardRef<
   React.ElementRef<typeof TogglePrimitive.Root>,
   DatatableEditModeToggleProps
->(({ editMode, setEditMode, className, ...props }, ref) => (
+>(({ datatable: { editMode, setEditMode }, className, ...props }, ref) => (
   <Toggle
     variant={"outline"}
     pressed={editMode}

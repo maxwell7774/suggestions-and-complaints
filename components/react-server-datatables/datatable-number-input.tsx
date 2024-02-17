@@ -1,12 +1,13 @@
-import { cn } from "@/lib/utils";
-import React, { useState } from "react";
+import React from "react";
 import { Input } from "../ui/input";
 import { useUpdateRow } from "./hooks/use-update-row";
-import DatatableParams from "./datatable-params";
+import { Datatable } from ".";
+import { toast } from "sonner";
+import { ToastDestructive } from "../toast-variants";
 
 interface DatatableNumberInputProps
   extends React.TdHTMLAttributes<HTMLInputElement> {
-  datatableParams: DatatableParams;
+  datatable: Datatable;
   item: any;
   propertyName: string;
   editMode?: boolean;
@@ -18,7 +19,7 @@ const DatatableNumberInput = React.forwardRef<
 >(
   (
     {
-      datatableParams,
+      datatable: { apiUrl, primaryKeyField, zodSchema },
       className,
       editMode = false,
       item,
@@ -27,7 +28,27 @@ const DatatableNumberInput = React.forwardRef<
     },
     ref
   ) => {
-    const { mutate } = useUpdateRow(datatableParams);
+    const { mutate } = useUpdateRow(apiUrl, primaryKeyField);
+
+    const handleBlur = (e: React.FocusEvent<HTMLInputElement, Element>) => {
+      if (Number(e.target.value) !== props.defaultValue) {
+        const updatedItem = { ...item, [propertyName]: Number(e.target.value) };
+
+        const result = zodSchema.safeParse(updatedItem);
+
+        if (result.success) {
+          mutate(updatedItem);
+        } else {
+          toast.custom((toastId) => (
+            <ToastDestructive toastId={toastId}>
+              {result.error.errors.map((error) => (
+                <p key={error.code}>{error.message}</p>
+              ))}
+            </ToastDestructive>
+          ));
+        }
+      }
+    };
 
     if (editMode) {
       return (
@@ -36,14 +57,7 @@ const DatatableNumberInput = React.forwardRef<
           type="number"
           {...props}
           ref={ref}
-          onBlur={(e) => {
-            if (Number(e.target.value) !== props.defaultValue) {
-              mutate({
-                ...item,
-                [propertyName]: Number(e.target.value),
-              });
-            }
-          }}
+          onBlur={handleBlur}
         />
       );
     }

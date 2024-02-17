@@ -1,41 +1,53 @@
+// import {
+//   ToastDestructive,
+//   ToastInfo,
+//   ToastSuccess,
+// } from "@/components/toast-variants";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import axios from "axios";
 import { useSession } from "next-auth/react";
 import { toast } from "sonner";
-import DatatableParams from "../datatable-params";
-import axios from "axios";
-import { ToastDestructive, ToastSuccess } from "@/components/toast-variants";
 
 //Update row hook
 //Uses optimistic updating
 //Uses the id and new rowdata to update the data
-export function useUpdateRow(datatableParams: DatatableParams) {
+export function useUpdateRow(apiUrl: string, primaryKeyField: string) {
   const queryClient = useQueryClient();
   const { status, data: session } = useSession();
 
   return useMutation({
-    mutationKey: [datatableParams.apiUrl],
+    mutationKey: [apiUrl],
     mutationFn: async (updatedRow: any) => {
       console.log(updatedRow);
       return await axios.put(
-        `${datatableParams.apiUrl}/${
-          updatedRow[datatableParams.primaryKeyProperty]
-        }`,
+        `${apiUrl}/${updatedRow[primaryKeyField]}`,
         updatedRow
       );
     },
+    onMutate: () => {
+      // toast.custom((toastId) => (
+      //   <ToastInfo toastId={toastId}>
+      //     <div className="flex space-x-2 items-center">
+      //       <p className="animate-pulse">Saving</p>
+      //     </div>
+      //   </ToastInfo>
+      // ));
+    },
     onSuccess: () => {
-      toast.custom((toastId) => (
-        <ToastSuccess description="Update successful" toastId={toastId} />
-      ));
+      // toast.custom((toastId) => (
+      //   <ToastSuccess toastId={toastId}>Update successfull</ToastSuccess>
+      // ));
     },
     onError: (err, editedRow, context) => {
-      toast.custom((toastId) => (
-        <ToastDestructive description="Update unsuccessful" toastId={toastId} />
-      ));
+      // toast.custom((toastId) => (
+      //   <ToastDestructive toastId={toastId}>
+      //     Update unsuccessful
+      //   </ToastDestructive>
+      // ));
     },
     onSettled: () => {
       queryClient.invalidateQueries({
-        queryKey: [datatableParams.apiUrl],
+        queryKey: [apiUrl],
       });
     },
   });

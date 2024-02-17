@@ -2,13 +2,16 @@
 
 import * as CheckboxPrimitive from "@radix-ui/react-checkbox";
 import * as React from "react";
+
 import { Checkbox } from "../ui/checkbox";
 import { useUpdateRow } from "./hooks/use-update-row";
-import DatatableParams from "./datatable-params";
+import { Datatable } from ".";
+import { toast } from "sonner";
+import { ToastDestructive } from "../toast-variants";
 
 interface DatatableCheckboxInputProps
   extends React.ComponentPropsWithoutRef<typeof CheckboxPrimitive.Root> {
-  datatableParams: DatatableParams;
+  datatable: Datatable;
   item: any;
   propertyName: string;
   editMode?: boolean;
@@ -20,7 +23,7 @@ const DatatableCheckboxInput = React.forwardRef<
 >(
   (
     {
-      datatableParams,
+      datatable: { apiUrl, primaryKeyField, zodSchema },
       className,
       editMode = false,
       item,
@@ -29,21 +32,34 @@ const DatatableCheckboxInput = React.forwardRef<
     },
     ref
   ) => {
-    const { mutate } = useUpdateRow(datatableParams);
+    const { mutate } = useUpdateRow(apiUrl, primaryKeyField);
+
+    const handleCheckedChanged = (e: CheckboxPrimitive.CheckedState) => {
+      if (e !== props.defaultValue) {
+        const updatedItem = { ...item, [propertyName]: e };
+
+        const result = zodSchema.safeParse(updatedItem);
+
+        if (result.success) {
+          mutate(updatedItem);
+        } else {
+          toast.custom((toastId) => (
+            <ToastDestructive toastId={toastId}>
+              {result.error.errors.map((error) => (
+                <p key={error.code}>{error.message}</p>
+              ))}
+            </ToastDestructive>
+          ));
+        }
+      }
+    };
 
     return (
       <Checkbox
         ref={ref}
         disabled={!editMode}
         {...props}
-        onCheckedChange={(e) => {
-          if (e !== props.defaultValue) {
-            mutate({
-              ...item,
-              [propertyName]: e,
-            });
-          }
-        }}
+        onCheckedChange={handleCheckedChanged}
       />
     );
   }

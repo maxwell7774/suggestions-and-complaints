@@ -6,19 +6,21 @@ import {
   Datatable,
   DatatableBody,
   DatatableCell,
+  DatatableColumnSearch,
   DatatableHead,
   DatatableHeader,
   DatatableHeaderRow,
   DatatablePageSizeSelect,
   DatatablePagination,
+  DatatableRoot,
   DatatableRow,
   DatatableSearchInput,
 } from "@/components/react-server-datatables";
 import { useDatatable } from "@/components/react-server-datatables/hooks/use-datatable";
-import { Card } from "@/components/ui/card";
 import { Message as PrismaMessage } from "@prisma/client";
 import Link from "next/link";
 import SkeletonRows from "./skeleton-rows";
+import schema from "@/app/user/_schemas/message-form-schema";
 
 //Messages datatable that allows for searching and paginating messages send in by the user
 //Where I'm using typescript and trying to provide examples of inheritance using class,
@@ -27,13 +29,12 @@ import SkeletonRows from "./skeleton-rows";
 const MessagesDatatable = () => {
   //Sends the api url and primary key of the table/data that we would like to retrieve
   const {
-    datatableParams, //The datatable params that allow for searching, pagination, and updating the query keys
-    query: { data, isPlaceholderData }, //The data returned from the backend and is placeholder data from the keep previous data as paginating
-    setDatatableParams, //Allows for updating the datatableParams and calling for new data from the server
+    query: { data, isPlaceholderData },
+    datatable,
   } = useDatatable<PrismaMessage>({
-    //Hook for retrieving all the above information
-    apiUrl: "/api/messages", //backend endpoint
-    primaryKeyProperty: "id", //primary key for the data
+    apiUrl: "/api/messages",
+    primaryKeyField: "id",
+    zodSchema: schema,
   });
 
   //Sets up the Message array so that I can convert the prisma messages to my class messages
@@ -51,105 +52,92 @@ const MessagesDatatable = () => {
 
   return (
     <div className="flex flex-col space-y-2">
-      <DatatableSearchInput
-        className="w-full"
-        datatableParams={datatableParams}
-        setDatatableParams={setDatatableParams}
-      />
-      <Card>
-        <Datatable>
-          <DatatableHeader>
-            <DatatableHeaderRow>
-              <DatatableHead
-                className="hidden md:table-cell"
+      <DatatableSearchInput className="w-full" datatable={datatable} />
+      <DatatableRoot>
+        <DatatableHeader>
+          <DatatableHeaderRow>
+            <DatatableHead
+              className="hidden md:table-cell"
+              propertyName={"id"}
+              datatable={datatable}
+              title={"Id"}
+            >
+              <DatatableColumnSearch
                 propertyName={"id"}
-                datatableParams={datatableParams}
-                setDatatableParams={setDatatableParams}
-                isSearchable={true}
-              >
-                Id
-              </DatatableHead>
-              <DatatableHead
-                className="hidden sm:table-cell"
-                propertyName={"messageType"}
-                datatableParams={datatableParams}
-                setDatatableParams={setDatatableParams}
-              >
-                Message Type
-              </DatatableHead>
-              <DatatableHead
-                propertyName={"subject"}
-                datatableParams={datatableParams}
-                setDatatableParams={setDatatableParams}
-                isSearchable={true}
-              >
-                Subject
-              </DatatableHead>
-              <DatatableHead
-                className="hidden sm:table-cell"
-                propertyName={"dateCreated"}
-                datatableParams={datatableParams}
-                setDatatableParams={setDatatableParams}
-              >
-                Date Created
-              </DatatableHead>
-              <DatatableHead
-                className="hidden md:table-cell"
-                propertyName={"dateUpdated"}
-                datatableParams={datatableParams}
-                setDatatableParams={setDatatableParams}
-              >
-                Date Updated
-              </DatatableHead>
-            </DatatableHeaderRow>
-          </DatatableHeader>
-          <DatatableBody>
-            {/* If there are messages, render the datatable rows */}
-            {messages ? (
-              messages.map((message) => (
-                <DatatableRow key={message.getId()} rowdata={message}>
-                  <DatatableCell className="hidden md:table-cell">
-                    {message.getId()}
-                  </DatatableCell>
-                  <DatatableCell className="hidden sm:table-cell">
-                    {(message as Complaint) ? "Complaint" : "Suggestion"}
-                  </DatatableCell>
-                  <DatatableCell>
-                    <Link
-                      className="hover:text-neutral-500 underline transition-colors"
-                      href={`/reviewer/${message.getId()}`}
-                    >
-                      {message.getSubject()}
-                    </Link>
-                  </DatatableCell>
-                  <DatatableCell className="hidden sm:table-cell">
-                    {message.getDateCreated().toLocaleString()}
-                  </DatatableCell>
-                  <DatatableCell className="hidden md:table-cell">
-                    {message.getDateUpdated().toLocaleString()}
-                  </DatatableCell>
-                </DatatableRow>
-              ))
-            ) : (
-              // If there are no messages then render skeleton
-              <SkeletonRows rows={datatableParams.pageSize} cols={5} />
-            )}
-          </DatatableBody>
-        </Datatable>
-      </Card>
+                datatable={datatable}
+              />
+            </DatatableHead>
+            <DatatableHead
+              className="hidden sm:table-cell"
+              propertyName={"messageType"}
+              datatable={datatable}
+              title="Message Type"
+            />
+            <DatatableHead
+              propertyName={"subject"}
+              datatable={datatable}
+              title="Subject"
+            >
+              <DatatableColumnSearch
+                propertyName="subject"
+                datatable={datatable}
+              />
+            </DatatableHead>
+            <DatatableHead
+              className="hidden sm:table-cell"
+              propertyName={"dateCreated"}
+              datatable={datatable}
+              title="Created"
+            />
+            <DatatableHead
+              className="hidden md:table-cell"
+              propertyName={"dateUpdated"}
+              title="Updated"
+              datatable={datatable}
+            />
+          </DatatableHeaderRow>
+        </DatatableHeader>
+        <DatatableBody>
+          {
+            messages
+              ? messages.map((message) => (
+                  <DatatableRow key={message.getId()} rowdata={message}>
+                    <DatatableCell className="hidden md:table-cell">
+                      {message.getId()}
+                    </DatatableCell>
+                    <DatatableCell className="hidden sm:table-cell">
+                      {(message as Suggestion) ? "Suggestion" : "Complaint"}
+                    </DatatableCell>
+                    <DatatableCell>
+                      <Link
+                        className="hover:text-neutral-500 underline transition-colors"
+                        href={`/reviewer/${message.getId()}`}
+                      >
+                        {message.getSubject()}
+                      </Link>
+                    </DatatableCell>
+                    <DatatableCell className="hidden sm:table-cell">
+                      {message.getDateCreated().toLocaleString()}
+                    </DatatableCell>
+                    <DatatableCell className="hidden md:table-cell">
+                      {message.getDateUpdated().toLocaleString()}
+                    </DatatableCell>
+                  </DatatableRow>
+                ))
+              : null
+            // <SkeletonRows rows={datatable.pageSize} cols={5} />
+          }
+        </DatatableBody>
+      </DatatableRoot>
       <div className="flex w-full justify-end space-x-5">
         <DatatablePageSizeSelect
-          datatableParams={datatableParams}
-          setDatatableParams={setDatatableParams}
+          datatable={datatable}
           pageSizes={[1, 3, 5, 10, 20, 50]}
         />
         <DatatablePagination
-          datatableParams={datatableParams}
-          setDatatableParams={setDatatableParams}
+          datatable={datatable}
           isPlaceholderData={isPlaceholderData}
-          hasNextPage={data ? data.hasNextPage : false}
-          hasPreviousPage={data ? data.hasPreviousPage : false}
-          totalCount={data ? data.totalCount : 0}
+          data={data}
         />
       </div>
     </div>

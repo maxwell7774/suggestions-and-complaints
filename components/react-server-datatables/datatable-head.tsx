@@ -8,14 +8,14 @@ import {
 } from "lucide-react";
 import React from "react";
 import { TableHead } from "../ui/table";
-import DatatableParams from "./datatable-params";
+import { Datatable } from ".";
 
 interface DatatableHeadProps
   extends React.ThHTMLAttributes<HTMLTableCellElement> {
   propertyName: string;
-  datatableParams: DatatableParams;
-  isSearchable?: boolean;
-  setDatatableParams: (newSearchParams: DatatableParams) => void;
+  title: string;
+  datatable: Datatable;
+  disableSort?: boolean;
 }
 
 const DatatableHead = React.forwardRef<
@@ -24,71 +24,51 @@ const DatatableHead = React.forwardRef<
 >(
   (
     {
-      datatableParams,
+      title,
       propertyName,
-      isSearchable = false,
-      setDatatableParams,
+      disableSort = false,
+      datatable: { sortBy, sortDir, setSortBy, setSortDir },
       className,
       ...props
     },
     ref
   ) => {
     const handleSort = () => {
-      if (datatableParams.sortCol !== propertyName) {
-        setDatatableParams({
-          ...datatableParams,
-          sortCol: propertyName,
-          sortDir: "asc",
-        });
-      } else if (datatableParams.sortDir === "asc") {
-        setDatatableParams({ ...datatableParams, sortDir: "desc" });
-      } else if (datatableParams.sortDir === "desc") {
-        setDatatableParams({ ...datatableParams, sortDir: "asc" });
+      if (sortBy !== propertyName) {
+        setSortBy(propertyName);
+        setSortDir("asc");
+      } else if (sortDir === "asc") {
+        setSortDir("desc");
+      } else if (sortDir === "desc") {
+        setSortDir("asc");
       }
     };
 
     return (
       <TableHead ref={ref} className={className} {...props}>
-        <div className="flex items-center justify-between w-full h-full space-x-2">
-          {props.children}
-          <div className="flex items-center space-x-2">
-            {isSearchable && (
+        <div className="flex items-center justify-between w-full h-full">
+          <span>{title}</span>
+          <div className="ml-2 flex items-center space-x-2">
+            {props.children}
+            {!disableSort && (
               <div
-                onClick={() =>
-                  setDatatableParams({
-                    ...datatableParams,
-                    searchCol: propertyName,
-                  })
-                }
+                onClick={handleSort}
                 className={cn(
-                  "flex items-center justify-center hover:cursor-pointer hover:text-muted-foreground transition-colors text-muted",
-                  datatableParams.searchCol === propertyName &&
-                    "text-muted-foreground"
+                  "flex items-center justify-center hover:cursor-pointer hover:text-muted-foreground transition-colors text-muted-foreground/30",
+                  sortBy === propertyName && "text-muted-foreground"
                 )}
               >
-                <Search className="w-4 h-4 min-w-4 min-h-4" />
-              </div>
-            )}
-            <div
-              onClick={handleSort}
-              className={cn(
-                "flex items-center justify-center hover:cursor-pointer hover:text-muted-foreground transition-colors text-muted",
-                datatableParams.sortCol === propertyName &&
-                  "text-muted-foreground"
-              )}
-            >
-              {datatableParams.sortCol === propertyName &&
-                datatableParams.sortDir === "asc" && (
+                {sortBy === propertyName && sortDir === "asc" && (
                   <ChevronDown className="w-4 h-4 min-w-4 min-h-4" />
                 )}
-              {datatableParams.sortCol === propertyName &&
-                datatableParams.sortDir === "desc" && (
+                {sortBy === propertyName && sortDir === "desc" && (
                   <ChevronUp className="w-4 h-4 min-w-4 min-h-4" />
                 )}
-              {datatableParams.sortCol !== propertyName && (
-                <ChevronsUpDown className="w-4 h-4 min-w-4 min-h-4" />
-              )}
-            </div>
+                {sortBy !== propertyName && (
+                  <ChevronsUpDown className="w-4 h-4 min-w-4 min-h-4" />
+                )}
+              </div>
+            )}
           </div>
         </div>
       </TableHead>

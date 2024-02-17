@@ -1,5 +1,4 @@
-import { auth } from "@/auth";
-import isAuthorized from "@/lib/is-authorized";
+import { SearchFilter } from "@/components/react-server-datatables";
 import PagedList from "@/lib/paged-list";
 import { prismaClient } from "@/prisma-client";
 import { Message } from "@prisma/client";
@@ -9,45 +8,62 @@ import { NextRequest, NextResponse } from "next/server";
 interface SearchParams {
   page: number;
   pageSize: number;
+  sortBy: string;
   sortDir: "asc" | "desc";
-  sortCol: string;
   searchTerm: string;
-  searchCol: string;
+  searchFields: string[];
+  searchFilters: SearchFilter[];
 }
 
 //Parses search parameters
 const parseSearchParams = (searchParams: URLSearchParams): SearchParams => {
   return {
-    page: Number(searchParams.get("page")) || 1,
-    pageSize: Number(searchParams.get("pageSize")) || 10,
+    page: Number(searchParams.get("page")),
+    pageSize: Number(searchParams.get("pageSize")),
+    sortBy: searchParams.get("sortBy") ?? "",
     sortDir: searchParams.get("sortDir") === "desc" ? "desc" : "asc",
-    sortCol: searchParams.get("sortCol") || "id",
-    searchTerm: searchParams.get("searchTerm") || "",
-    searchCol: searchParams.get("searchCol") || "",
+    searchTerm: searchParams.get("searchTerm") ?? "",
+    searchFields: searchParams.get("searchFields")
+      ? JSON.parse(searchParams.get("searchFields")!)
+      : [],
+    searchFilters: searchParams.get("searchFilters")
+      ? JSON.parse(searchParams.get("searchFilters")!)
+      : [],
   };
 };
 
 //Gets all messages based on search params
 export async function GET(request: NextRequest) {
-  const session = await auth();
-  const authorizedRoles = ["REVIEWER", "ADMIN"];
+  const {
+    page,
+    pageSize,
+    sortBy,
+    sortDir,
+    searchTerm,
+    searchFields,
+    searchFilters,
+  } = parseSearchParams(request.nextUrl.searchParams);
 
-  //Checks to see if the user is authorized
-  if (!isAuthorized(session, authorizedRoles)) {
-    return NextResponse.json(
-      { error: "You are not authorized." },
-      { status: 403 }
-    );
+  let where = {};
+
+  if (searchFields.length > 0 && searchTerm) {
+    let OR: any[] = [];
+    searchFields.forEach((searchField) => {
+      OR.push({ [searchField]: { contains: searchTerm } });
+    });
+    where = { OR: OR };
+  } else {
+    where = {
+      OR: [
+        { id: { contains: searchTerm } },
+        { subject: { contains: searchTerm } },
+      ],
+    };
   }
 
-  //Parses the search params
-  const { page, pageSize, searchCol, searchTerm, sortCol, sortDir } =
-    parseSearchParams(request.nextUrl.searchParams);
-
-  //Gets the messages based on the search params
   let messages = await prismaClient.message.findMany({
-    where: { [searchCol]: { contains: searchTerm } },
-    orderBy: [{ [sortCol]: sortDir }, { id: sortDir }],
+    where: where,
+    orderBy: [{ [sortBy]: sortDir }, { id: sortDir }],
     skip: (page - 1) * pageSize,
     take: pageSize,
   });
@@ -55,7 +71,7 @@ export async function GET(request: NextRequest) {
   //Gets the total count of the messages for that search term
   //Gets the total count of all messages if search term is empty
   let totalCount: number = await prismaClient.message.count({
-    where: { [searchCol]: { contains: searchTerm } },
+    where: where,
   });
 
   //Wraps the messages into a Paged List used for pagination on the frontend
