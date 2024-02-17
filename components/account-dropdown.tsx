@@ -40,12 +40,6 @@ const AccountDropdown = ({ imageUrl, name }: AccountDropdownProps) => {
         <DropdownMenuLabel>My Account</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuItem asChild>
-            <Link href={"/profile"}>
-              <User className="mr-2 h-4 w-4" />
-              <span>Profile</span>
-            </Link>
-          </DropdownMenuItem>
           <DropdownMenuSub>
             <DropdownMenuSubTrigger>
               {resolvedTheme === "dark" && <Moon className="mr-2 h-4 w-4" />}

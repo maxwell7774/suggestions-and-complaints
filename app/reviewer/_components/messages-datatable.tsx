@@ -21,6 +21,7 @@ import { Message as PrismaMessage } from "@prisma/client";
 import Link from "next/link";
 import SkeletonRows from "./skeleton-rows";
 import schema from "@/app/user/_schemas/message-form-schema";
+import { format } from "date-fns";
 
 //Messages datatable that allows for searching and paginating messages send in by the user
 //Where I'm using typescript and trying to provide examples of inheritance using class,
@@ -106,7 +107,9 @@ const MessagesDatatable = () => {
                       {message.getId()}
                     </DatatableCell>
                     <DatatableCell className="hidden sm:table-cell">
-                      {(message as Suggestion) ? "Suggestion" : "Complaint"}
+                      {(message as Suggestion).getSender
+                        ? "Suggestion"
+                        : "Complaint"}
                     </DatatableCell>
                     <DatatableCell>
                       <Link
@@ -117,10 +120,10 @@ const MessagesDatatable = () => {
                       </Link>
                     </DatatableCell>
                     <DatatableCell className="hidden sm:table-cell">
-                      {message.getDateCreated().toLocaleString()}
+                      {format(message.getDateCreated(), "PPpp")}
                     </DatatableCell>
                     <DatatableCell className="hidden md:table-cell">
-                      {message.getDateUpdated().toLocaleString()}
+                      {format(message.getDateUpdated(), "PPpp")}
                     </DatatableCell>
                   </DatatableRow>
                 ))
