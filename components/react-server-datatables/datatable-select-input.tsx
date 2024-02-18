@@ -71,13 +71,13 @@ const DatatableSelectInput = React.forwardRef<
       if (result.success) {
         mutate(newItem);
       } else {
-        toast.custom((toastId) => (
-          <ToastDestructive toastId={toastId}>
-            {result.error.errors.map((error) => (
-              <p key={error.code}>{error.message}</p>
-            ))}
-          </ToastDestructive>
-        ));
+        // toast.custom((toastId) => (
+        //   <ToastDestructive toastId={toastId}>
+        //     {result.error.errors.map((error) => (
+        //       <p key={error.code}>{error.message}</p>
+        //     ))}
+        //   </ToastDestructive>
+        // ));
       }
     };
 

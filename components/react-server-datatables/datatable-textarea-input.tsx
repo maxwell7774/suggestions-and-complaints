@@ -43,13 +43,13 @@ const DatatableTextareaInput = React.forwardRef<
         if (result.success) {
           mutate(updatedItem);
         } else {
-          toast.custom((toastId) => (
-            <ToastDestructive toastId={toastId}>
-              {result.error.errors.map((error) => (
-                <p key={error.code}>{error.message}</p>
-              ))}
-            </ToastDestructive>
-          ));
+          // toast.custom((toastId) => (
+          //   <ToastDestructive toastId={toastId}>
+          //     {result.error.errors.map((error) => (
+          //       <p key={error.code}>{error.message}</p>
+          //     ))}
+          //   </ToastDestructive>
+          // ));
         }
       }
     };

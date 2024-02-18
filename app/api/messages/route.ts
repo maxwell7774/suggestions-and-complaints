@@ -80,6 +80,8 @@ export async function GET(request: NextRequest) {
     totalCount: totalCount,
     hasNextPage: page * pageSize < totalCount,
     hasPreviousPage: page > 1,
+    page: page,
+    pageSize: pageSize,
   };
 
   //Sends the wrapped messages

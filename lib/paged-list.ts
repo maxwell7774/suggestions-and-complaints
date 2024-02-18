@@ -3,4 +3,6 @@ export default interface PagedList<Type> {
   totalCount: number;
   hasNextPage: boolean;
   hasPreviousPage: boolean;
+  page: number;
+  pageSize: number;
 }
