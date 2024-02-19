@@ -134,7 +134,6 @@ const MessagesDatatable = () => {
           isPlaceholderData={isPlaceholderData}
           data={messages}
         />
-        <Button onClick={() => window.print()}>Print</Button>
       </div>
     </div>
   );

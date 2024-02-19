@@ -117,11 +117,15 @@ export async function GET(request: NextRequest) {
     query = { where: where };
   }
 
-  if (skip && take) {
+  if (page !== 0 && pageSize !== 0) {
     query = { ...query, skip: skip, take: take };
   }
 
-  query = { ...query, orderBy: [{ [sortBy]: sortDir }, { id: sortDir }] };
+  query = {
+    ...query,
+    orderBy: [{ [sortBy]: sortDir }, { id: sortDir }],
+    include: { sender: true },
+  };
 
   // let messages1 = await prismaClient.message.findMany({where: {AND:[{id: }]}})
 
