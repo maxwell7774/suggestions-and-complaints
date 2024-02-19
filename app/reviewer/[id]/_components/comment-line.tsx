@@ -1,10 +1,10 @@
 import React from "react";
 import DeleteCommentButton from "./delete-comment-button";
 import EditCommentButton from "./edit-comment-button";
-import { MessageComment } from "@/classes/message-comment";
+import { MessageComment, User } from "@prisma/client";
 
 interface Props {
-  comment: MessageComment;
+  comment: MessageComment & { commenter: User };
   userId: string;
 }
 
@@ -14,23 +14,23 @@ const CommentLine = ({ comment, userId }: Props) => {
   return (
     <div
       className="flex justify-between items-center space-x-3"
-      key={comment.getId()}
+      key={comment.id}
     >
       <blockquote className=" border-l-2 pl-6 italic">
         <span>
-          {comment.getCommenter().getName() +
+          {comment.commenter.name +
             " (" +
-            comment.getDateUpdated().toLocaleString() +
+            comment.lastUpdated.toLocaleString() +
             ")"}
         </span>
-        <span>{": " + comment.getCommentMessage()}</span>
+        <span>{": " + comment.comment}</span>
       </blockquote>
-      {userId === comment.getCommenter().getId() && (
+      {userId === comment.commenter.id && (
         <div className="flex space-x-2">
-          <EditCommentButton commentId={comment.getId()} />
+          <EditCommentButton commentId={comment.id} />
           <DeleteCommentButton
-            commentId={comment.getId()}
-            commentMessage={comment.getCommentMessage()}
+            commentId={comment.id}
+            commentMessage={comment.comment}
           />
         </div>
       )}

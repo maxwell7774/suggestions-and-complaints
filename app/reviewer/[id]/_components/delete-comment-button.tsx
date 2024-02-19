@@ -1,6 +1,5 @@
 "use client";
 
-import { MessageComment } from "@/classes/message-comment";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,

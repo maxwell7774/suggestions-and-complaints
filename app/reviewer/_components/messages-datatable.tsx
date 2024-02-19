@@ -1,7 +1,4 @@
 "use client";
-import { Complaint } from "@/classes/message/complaint";
-import { Message } from "@/classes/message/message";
-import { Suggestion } from "@/classes/message/suggestion";
 import {
   Datatable,
   DatatableBody,
@@ -17,7 +14,7 @@ import {
   DatatableSearchInput,
 } from "@/components/react-server-datatables";
 import { useDatatable } from "@/components/react-server-datatables/hooks/use-datatable";
-import { Message as PrismaMessage } from "@prisma/client";
+import { Message } from "@prisma/client";
 import Link from "next/link";
 import SkeletonRows from "./skeleton-rows";
 import schema from "@/app/user/_schemas/message-form-schema";
@@ -30,26 +27,13 @@ import { format } from "date-fns";
 const MessagesDatatable = () => {
   //Sends the api url and primary key of the table/data that we would like to retrieve
   const {
-    query: { data, isPlaceholderData },
+    query: { data: messages, isPlaceholderData },
     datatable,
-  } = useDatatable<PrismaMessage>({
+  } = useDatatable<Message>({
     apiUrl: "/api/messages",
     primaryKeyField: "id",
     zodSchema: schema,
   });
-
-  //Sets up the Message array so that I can convert the prisma messages to my class messages
-  let messages: Message[] | null = null;
-
-  //if there is data convert the messages
-  if (data) {
-    messages = data.items.map((message) => {
-      if (message.messageType === "COMPLAINT") {
-        return Complaint.prismaMapToComplaint(message, [], []);
-      }
-      return Suggestion.prismaMapToSuggestion(message, undefined, [], []);
-    });
-  }
 
   return (
     <div className="flex flex-col space-y-2">
@@ -101,29 +85,29 @@ const MessagesDatatable = () => {
         <DatatableBody>
           {
             messages
-              ? messages.map((message) => (
-                  <DatatableRow key={message.getId()} rowdata={message}>
+              ? messages.items.map((message) => (
+                  <DatatableRow key={message.id} rowdata={message}>
                     <DatatableCell className="hidden md:table-cell">
-                      {message.getId()}
+                      {message.id}
                     </DatatableCell>
                     <DatatableCell className="hidden sm:table-cell">
-                      {(message as Suggestion).getSender
+                      {message.messageType === "SUGGESTION"
                         ? "Suggestion"
                         : "Complaint"}
                     </DatatableCell>
                     <DatatableCell>
                       <Link
                         className="hover:text-neutral-500 underline transition-colors"
-                        href={`/reviewer/${message.getId()}`}
+                        href={`/reviewer/${message.id}`}
                       >
-                        {message.getSubject()}
+                        {message.subject}
                       </Link>
                     </DatatableCell>
                     <DatatableCell className="hidden sm:table-cell">
-                      {format(message.getDateCreated(), "PPpp")}
+                      {format(new Date(message.dateCreated), "PPpp")}
                     </DatatableCell>
                     <DatatableCell className="hidden md:table-cell">
-                      {format(message.getDateUpdated(), "PPpp")}
+                      {format(new Date(message.dateUpdated), "PPpp")}
                     </DatatableCell>
                   </DatatableRow>
                 ))
@@ -140,7 +124,7 @@ const MessagesDatatable = () => {
         <DatatablePagination
           datatable={datatable}
           isPlaceholderData={isPlaceholderData}
-          data={data}
+          data={messages}
         />
       </div>
     </div>
