@@ -19,7 +19,7 @@ import { format } from "date-fns";
 import { Loader2 } from "lucide-react";
 import { useRef, useState } from "react";
 import { useReactToPrint } from "react-to-print";
-import { GeneratedReport } from "./generated-report";
+import GeneratedReport from "./generated-report";
 
 const ReportGenerator = () => {
   const [eqFilter, setEqFilter] = useState<SearchFilter | null>(null);

@@ -16,7 +16,7 @@ interface Props {
   messages: (Message & { sender: User })[];
 }
 
-export const GeneratedReport = React.forwardRef<React.ElementRef<"div">, Props>(
+const GeneratedReport = React.forwardRef<React.ElementRef<"div">, Props>(
   ({ reportColumns, messages }: Props, ref) => {
     return (
       <div ref={ref} className="p-5">
@@ -57,3 +57,7 @@ export const GeneratedReport = React.forwardRef<React.ElementRef<"div">, Props>(
     );
   }
 );
+
+GeneratedReport.displayName = "GeneratedReport";
+
+export default GeneratedReport;
