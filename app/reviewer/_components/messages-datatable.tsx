@@ -3,6 +3,8 @@ import {
   Datatable,
   DatatableBody,
   DatatableCell,
+  DatatableColumnCategorySelect,
+  DatatableColumnDatePicker,
   DatatableColumnSearch,
   DatatableHead,
   DatatableHeader,
@@ -19,6 +21,7 @@ import Link from "next/link";
 import SkeletonRows from "./skeleton-rows";
 import schema from "@/app/user/_schemas/message-form-schema";
 import { format } from "date-fns";
+import { Button } from "@/components/ui/button";
 
 //Messages datatable that allows for searching and paginating messages send in by the user
 //Where I'm using typescript and trying to provide examples of inheritance using class,
@@ -57,7 +60,16 @@ const MessagesDatatable = () => {
               propertyName={"messageType"}
               datatable={datatable}
               title="Message Type"
-            />
+            >
+              <DatatableColumnCategorySelect
+                propertyName={"messageType"}
+                datatable={datatable}
+                values={[
+                  { label: "Suggestion", value: "SUGGESTION" },
+                  { label: "Complaint", value: "COMPLAINT" },
+                ]}
+              />
+            </DatatableHead>
             <DatatableHead
               propertyName={"subject"}
               datatable={datatable}
@@ -73,13 +85,12 @@ const MessagesDatatable = () => {
               propertyName={"dateCreated"}
               datatable={datatable}
               title="Created"
-            />
-            <DatatableHead
-              className="hidden md:table-cell"
-              propertyName={"dateUpdated"}
-              title="Updated"
-              datatable={datatable}
-            />
+            >
+              <DatatableColumnDatePicker
+                propertyName={"dateCreated"}
+                datatable={datatable}
+              />
+            </DatatableHead>
           </DatatableHeaderRow>
         </DatatableHeader>
         <DatatableBody>
@@ -106,9 +117,6 @@ const MessagesDatatable = () => {
                     <DatatableCell className="hidden sm:table-cell">
                       {format(new Date(message.dateCreated), "PPpp")}
                     </DatatableCell>
-                    <DatatableCell className="hidden md:table-cell">
-                      {format(new Date(message.dateUpdated), "PPpp")}
-                    </DatatableCell>
                   </DatatableRow>
                 ))
               : null
@@ -126,6 +134,7 @@ const MessagesDatatable = () => {
           isPlaceholderData={isPlaceholderData}
           data={messages}
         />
+        <Button onClick={() => window.print()}>Print</Button>
       </div>
     </div>
   );

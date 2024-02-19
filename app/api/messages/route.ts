@@ -1,7 +1,7 @@
 import { SearchFilter } from "@/components/react-server-datatables";
 import PagedList from "@/lib/paged-list";
 import { prismaClient } from "@/prisma-client";
-import { Message } from "@prisma/client";
+import { Message, Prisma } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 
 //Shape of the search parameters
@@ -18,8 +18,8 @@ interface SearchParams {
 //Parses search parameters
 const parseSearchParams = (searchParams: URLSearchParams): SearchParams => {
   return {
-    page: Number(searchParams.get("page")),
-    pageSize: Number(searchParams.get("pageSize")),
+    page: Number(searchParams.get("page")) ?? 0,
+    pageSize: Number(searchParams.get("pageSize")) ?? 0,
     sortBy: searchParams.get("sortBy") ?? "",
     sortDir: searchParams.get("sortDir") === "desc" ? "desc" : "asc",
     searchTerm: searchParams.get("searchTerm") ?? "",
@@ -44,29 +44,88 @@ export async function GET(request: NextRequest) {
     searchFilters,
   } = parseSearchParams(request.nextUrl.searchParams);
 
-  let where = {};
+  let query = {};
+  let skip = {};
+  let take = {};
+  let where: Prisma.MessageWhereInput = {};
+  let AND: any[] = [];
+  let searchFieldsQuery: any[] = [];
+  let searchFiltersQuery: any[] = [];
 
-  if (searchFields.length > 0 && searchTerm) {
-    let OR: any[] = [];
-    searchFields.forEach((searchField) => {
-      OR.push({ [searchField]: { contains: searchTerm } });
-    });
-    where = { OR: OR };
-  } else {
-    where = {
-      OR: [
-        { id: { contains: searchTerm } },
-        { subject: { contains: searchTerm } },
-      ],
-    };
+  if (page !== 0 && pageSize !== 0) {
+    skip = (page - 1) * pageSize;
+    take = pageSize;
   }
 
-  let messages = await prismaClient.message.findMany({
-    where: where,
-    orderBy: [{ [sortBy]: sortDir }, { id: sortDir }],
-    skip: (page - 1) * pageSize,
-    take: pageSize,
-  });
+  if (searchFields.length > 0 && searchTerm) {
+    searchFields.forEach((searchField) => {
+      searchFieldsQuery.push({ [searchField]: { contains: searchTerm } });
+    });
+  } else {
+    searchFieldsQuery = [
+      { id: { contains: searchTerm } },
+      { subject: { contains: searchTerm } },
+    ];
+  }
+
+  if (searchFieldsQuery) {
+    AND.push({ OR: searchFieldsQuery });
+    where = { AND: [{ OR: searchFieldsQuery }] };
+  }
+
+  if (searchFilters.length > 0) {
+    let eqFilters = searchFilters.filter((filter) => filter.operator === "eq");
+    let lteFilters = searchFilters.filter(
+      (filter) => filter.operator === "lte"
+    );
+    let gteFilters = searchFilters.filter(
+      (filter) => filter.operator === "gte"
+    );
+
+    if (eqFilters.length > 0) {
+      eqFilters.forEach(({ field, value }) => {
+        if (field === "dateCreated") {
+          let date = new Date(value);
+          date.setHours(date.getHours() + 31);
+          AND.push({ [field]: { lte: date } });
+          AND.push({ [field]: { gte: new Date(value) } });
+        } else {
+          searchFiltersQuery.push({ [field]: { equals: value } });
+        }
+      });
+    }
+    if (lteFilters.length > 0) {
+      lteFilters.forEach(({ field, value }) => {
+        let date = new Date(value);
+        date.setHours(date.getHours() + 31);
+        AND.push({ [field]: { lte: date } });
+      });
+    }
+    if (gteFilters.length > 0) {
+      gteFilters.forEach(({ field, value }) =>
+        AND.push({ [field]: { gte: new Date(value) } })
+      );
+    }
+  }
+
+  if (searchFiltersQuery) {
+    AND.push({ OR: searchFiltersQuery });
+    where = { ...where, AND: AND };
+  }
+
+  if (where) {
+    query = { where: where };
+  }
+
+  if (skip && take) {
+    query = { ...query, skip: skip, take: take };
+  }
+
+  query = { ...query, orderBy: [{ [sortBy]: sortDir }, { id: sortDir }] };
+
+  // let messages1 = await prismaClient.message.findMany({where: {AND:[{id: }]}})
+
+  let messages = await prismaClient.message.findMany(query);
 
   //Gets the total count of the messages for that search term
   //Gets the total count of all messages if search term is empty

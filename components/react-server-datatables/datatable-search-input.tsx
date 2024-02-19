@@ -34,7 +34,7 @@ const DatatableSearchInput = ({
         }}
         placeholder="Search..."
       />
-      <Button size={"sm"} onClick={handleSearch}>
+      <Button size={"sm"} className="h-8" onClick={handleSearch}>
         Search
       </Button>
     </div>
