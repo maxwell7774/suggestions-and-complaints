@@ -11,9 +11,7 @@ setup("authenticate", async ({ page }) => {
     .fill("bobiojones45@gmail.com");
   await page.getByLabel("Password").fill("!%hkODBh$]3PA7hbVyLF");
   await page.getByRole("button", { name: "Sign in", exact: true }).click();
-  //   await page.getByRole("button", { name: "Authorize maxwell7774" }).click();
   await page.waitForURL("http://localhost:3000");
-  // End of authentication steps.
 
   await page.context().storageState({ path: authFile });
 });
